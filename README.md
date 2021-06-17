@@ -1,2 +1,2 @@
-# mod-ill-ra-storage
-FOLIO compatible persistent storage of Interlibrary Loan requests
+# mod-ill-ra
+FOLIO compatible ILL requesting agency capabilities
