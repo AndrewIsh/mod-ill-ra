@@ -1,0 +1,69 @@
+{
+  "$schema": "http://json-schema.org/draft-04/schema#",
+  "type": "object",
+  "title": "Request",
+  "description": "Represents a single interlibrary loan request",
+  "properties": {
+    "id": {
+      "description": "Unique ID (generated UUID) of the request",
+      "type": "string",
+      "$ref": "raml-util/schemas/uuid.schema"
+    },
+    "supplierId": {
+      "description": "ID of the supplier",
+      "type": "string",
+      "$ref": "raml-util/schemas/uuid.schema"
+    },
+    "userId": {
+      "description": "ID of the patron the request was made by",
+      "type": "string",
+      "$ref": "raml-util/schemas/uuid.schema"
+    },
+    "itemId": {
+      "description": "ID of the local inventory item created to represent the requested item",
+      "type": "string",
+      "$ref": "raml-util/schemas/uuid.schema"
+    },
+    "requestLocation": {
+      "description": "The location associated with the request",
+      "type": "string",
+      "$ref": "raml-util/schemas/uuid.schema"
+    },
+    "statusId": {
+      "description": "Status of the request",
+      "type": "string",
+      "$ref": "raml-util/schemas/uuid.schema"
+    },
+    "requestDate": {
+      "description": "Date time when the request was placed",
+      "type": "string"
+    },
+    "mediumId": {
+      "description": "Medium of the request",
+      "type": "string",
+      "$ref": "raml-util/schemas/uuid.schema"
+    },
+    "serviceId": {
+      "description": "ID of the requested service",
+      "type": "string"
+    },
+    "cost": {
+      "description": "Cost of the request",
+      "type": "number"
+    },
+    "supplierMetadata": {
+      "description": "Supplying agency provided metadata",
+      "type": "object"
+    }
+  },
+  "additionalProperties": false,
+  "required": [
+    "supplierId",
+    "userId",
+    "requestLocation",
+    "statusId",
+    "requestDate",
+    "mediumId",
+    "supplierMetadata"
+  ]
+}

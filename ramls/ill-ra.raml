@@ -1,0 +1,123 @@
+#%RAML 1.0
+title: ILL Requesting Agency API
+version: v0.1
+protocols: [ HTTP, HTTPS ]
+baseUri: http://localhost:9130
+
+documentation:
+  - title: Interlibrary Loan Requesting Agency API
+    content: <b>API for interlibrary loan requesting agency</b>
+
+types:
+  request:    !include request.json
+  requests:   !include requests.json
+  supplier:    !include supplier.json
+  suppliers:   !include suppliers.json
+  errors:     !include raml-util/schemas/errors.schema
+  parameters: !include raml-util/schemas/parameters.schema
+
+traits:
+  language: !include raml-util/traits/language.raml
+  pageable: !include raml-util/traits/pageable.raml
+  searchable: !include raml-util/traits/searchable.raml
+  validate: !include raml-util/traits/validation.raml
+
+resourceTypes:
+  collection: !include raml-util/rtypes/collection.raml
+  collection-item: !include raml-util/rtypes/item-collection.raml
+  get-only: !include raml-util/rtypes/get-only.raml
+
+/ill-ra:
+  /suppliers:
+    displayName: Supplying agencies
+    type:
+      collection:
+        exampleCollection: !include examples/suppliers.json
+        exampleItem: !include examples/supplier.json
+        schemaCollection: suppliers
+        schemaItem: supplier
+    get:
+      description: Retrieve a list of available supplying agencies
+      responses:
+        501:
+          description: "Not implemented yet"
+  /sa_update:
+    put:
+      description: Receive an arbitrary request update from a supplier and update the request accordingly
+      is: [validate]
+      responses:
+        501:
+          description: "Not implemented yet"
+  /requests:
+      displayName: Interlibrary loan requests
+      type:
+        collection:
+          exampleCollection: !include examples/requests.json
+          exampleItem: !include examples/request.json
+          schemaCollection: requests
+          schemaItem: request
+      get:
+        description: Retrieve a list of interlibrary loan requests
+        is: [pageable,
+          searchable: {description: "searchable using CQL",
+                          example: "id=\"cf23adf0-61ba-4887-bf82-956c4aae2260\""},
+          ]
+        responses:
+          501:
+            description: "Not implemented yet"
+      post:
+        description: Create a new interlibrary loan request
+        is: [validate]
+      /{requestId}:
+        type:
+          collection-item:
+            exampleItem: !include examples/request.json
+            schema: request
+        get:
+          description: Retrieve an interlibrary loan request by ID
+          responses:
+            501:
+              description: "Not implemented yet"
+        put:
+          description: Update an interlibary loan request
+          is: [validate]
+          responses:
+            501:
+              description: "Not implemented yet"
+        /status:
+          type:
+            collection-item:
+              exampleItem: !include examples/request.json
+              schema: request
+          put:
+            description: Update an interlibary loan request with it's current status from the supplier
+        /retry:
+          type:
+            collection-item:
+              exampleItem: !include examples/request.json
+              schema: request
+          put:
+            description: Request a retry from a request's supplier and update the request accordingly
+        /reminder:
+          type:
+            collection-item:
+              exampleItem: !include examples/request.json
+              schema: request
+          put:
+            description: Send a reminder to a request's supplier and update the request accordingly
+        /renew:
+          type:
+            collection-item:
+              exampleItem: !include examples/request.json
+              schema: request
+          put:
+            description: Request a renewal from a request's supplier and update the request accordingly
+        /notify:
+          type:
+            collection-item:
+              exampleItem: !include examples/request.json
+              schema: request
+          put:
+            description: Send an arbitrary message to a request's supplier and update the request accordingly
+
+

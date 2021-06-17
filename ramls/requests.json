@@ -1,0 +1,23 @@
+{
+  "$schema": "http://json-schema.org/draft-04/schema#",
+  "description": "Collection of requests",
+  "type": "object",
+  "properties": {
+    "ill-requests": {
+      "description": "List of interlibrary loan requests",
+      "id": "ill-requests",
+      "type": "array",
+      "items": {
+        "type": "object",
+        "$ref": "request.json"
+      }
+    },
+    "totalRecords": {
+      "type": "integer"
+    }
+  },
+  "required": [
+    "ill-requests",
+    "totalRecords"
+  ]
+}

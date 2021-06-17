@@ -1,0 +1,23 @@
+{
+  "$schema": "http://json-schema.org/draft-04/schema#",
+  "description": "Collection of suppliers",
+  "type": "object",
+  "properties": {
+    "ill-suppliers": {
+      "description": "List of interlibrary loan suppliers",
+      "id": "ill-suppliers",
+      "type": "array",
+      "items": {
+        "type": "object",
+        "$ref": "supplier.json"
+      }
+    },
+    "totalRecords": {
+      "type": "integer"
+    }
+  },
+  "required": [
+    "ill-suppliers",
+    "totalRecords"
+  ]
+}
