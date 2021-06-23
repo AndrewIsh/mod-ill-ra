@@ -1,0 +1,15 @@
+{
+  "supplierId": "df7f4993-8c14-4a0f-ab63-93975ab01c76",
+  "userId": "346ad017-dac1-417d-9ed8-0ac7eeb886aa",
+  "itemId": "cb20f34f-b773-462f-a091-b233cc96b9e6",
+  "requestLocation": "1e29e93c-56a6-4072-975a-e5e956e501dd",
+  "statusId": "5827b7f7-7038-497c-9863-2c34844ee35a",
+  "requestDate": "2021-06-09T23:11:00-01:00",
+  "mediumId": "11ffc94e-e213-4fae-bb7c-d90086d23b32",
+  "serviceId": "1234",
+  "cost":  "12.34",
+  "supplierMetadata": {
+    "title": "The Journal of the Whills",
+    "author": "The Whills"
+  }
+}
