@@ -9,10 +9,10 @@ documentation:
     content: <b>API for interlibrary loan requesting agency</b>
 
 types:
-  request:    !include request.json
-  requests:   !include requests.json
-  supplier:    !include supplier.json
-  suppliers:   !include suppliers.json
+  request:    !include mod-ill-ramls/schemas/request.json
+  requests:   !include mod-ill-ramls/schemas/requests.json
+  supplier:    !include mod-ill-ramls/schemas/supplier.json
+  suppliers:   !include mod-ill-ramls/schemas/suppliers.json
   errors:     !include raml-util/schemas/errors.schema
   parameters: !include raml-util/schemas/parameters.schema
   UUID:
@@ -55,8 +55,8 @@ resourceTypes:
       displayName: Interlibrary loan requests
       type:
         collection:
-          exampleCollection: !include examples/requests.json
-          exampleItem: !include examples/request_get.json
+          exampleCollection: !include mod-ill-ramls/examples/requests.json
+          exampleItem: !include mod-ill-ramls/examples/request_get.json
           schemaCollection: requests
           schemaItem: request
       is: [validate]
@@ -72,7 +72,7 @@ resourceTypes:
             type: UUID
         type:
           collection-item:
-            exampleItem: !include examples/request_get.json
+            exampleItem: !include mod-ill-ramls/examples/request_get.json
             schema: request
         is: [validate]
         get:
@@ -83,40 +83,40 @@ resourceTypes:
             application/json:
               example:
                 strict: false
-                value: !include examples/request_post.json
+                value: !include mod-ill-ramls/examples/request_post.json
               type: request
   #      /status:
   #        type:
   #          collection-item:
-  #            exampleItem: !include examples/request_post.json
+  #            exampleItem: !include mod-ill-ramls/examples/request_post.json
   #            schema: request
   #        put:
   #          description: Update an interlibary loan request with it's current status from the supplier
   #      /retry:
   #        type:
   #          collection-item:
-  #            exampleItem: !include examples/request_post.json
+  #            exampleItem: !include mod-ill-ramls/examples/request_post.json
   #            schema: request
   #        put:
   #          description: Request a retry from a request's supplier and update the request accordingly
   #      /reminder:
   #        type:
   #          collection-item:
-  #            exampleItem: !include examples/request_post.json
+  #            exampleItem: !include mod-ill-ramls/examples/request_post.json
   #            schema: request
   #        put:
   #          description: Send a reminder to a request's supplier and update the request accordingly
   #      /renew:
   #        type:
   #          collection-item:
-  #            exampleItem: !include examples/request_post.json
+  #            exampleItem: !include mod-ill-ramls/examples/request_post.json
   #            schema: request
   #        put:
   #          description: Request a renewal from a request's supplier and update the request accordingly
   #      /notify:
   #        type:
   #          collection-item:
-  #            exampleItem: !include examples/request_post.json
+  #            exampleItem: !include mod-ill-ramls/examples/request_post.json
   #            schema: request
   #        put:
   #          description: Send an arbitrary message to a request's supplier and update the request accordingly
