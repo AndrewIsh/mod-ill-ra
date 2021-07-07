@@ -85,6 +85,31 @@
           "methods": ["PUT"],
           "pathPattern": "/ill-ra/requests/{id}/notify",
           "permissionsRequired": ["ill-ra.requests.item.put"]
+        },
+        {
+          "methods": ["GET"],
+          "pathPattern": "/ill-ra/statuses",
+          "permissionsRequired": ["ill-ra.statuses.collection.get"]
+        },
+        {
+          "methods": ["GET"],
+          "pathPattern": "/ill-ra/statuses/{id}",
+          "permissionsRequired": ["ill-ra.statuses.item.get"]
+        },
+        {
+          "methods": ["POST"],
+          "pathPattern": "/ill-ra/statuses",
+          "permissionsRequired": ["ill-ra.statuses.item.post"]
+        },
+        {
+          "methods": ["PUT"],
+          "pathPattern": "/ill-ra/statuses/{id}",
+          "permissionsRequired": ["ill-ra.statuses.item.put"]
+        },
+        {
+          "methods": ["DELETE"],
+          "pathPattern": "/ill-ra/statuses/{id}",
+          "permissionsRequired": ["ill-ra.statuses.item.delete"]
         }
       ]
     }
@@ -114,7 +139,33 @@
       "permissionName": "ill-ra.requests.item.put",
       "displayName": "Interlibrary loan requests - update request",
       "description": "Update request"
+    },
+    {
+      "permissionName": "ill-ra.statuses.collection.get",
+      "displayName": "Interlibrary loan request statuses- get status collection",
+      "description": "Get status collection"
+    },
+    {
+      "permissionName": "ill-ra.statuses.item.get",
+      "displayName": "Interlibrary loan request status - get status",
+      "description": "Get status"
+    },
+    {
+      "permissionName": "ill-ra.statuses.item.post",
+      "displayName": "Interlibrary loan request statuses - create status",
+      "description": "Create status"
+    },
+    {
+      "permissionName": "ill-ra.statuses.item.put",
+      "displayName": "Interlibrary loan request statuses - update status",
+      "description": "Update status"
+    },
+    {
+      "permissionName": "ill-ra.statuses.item.delete",
+      "displayName": "Interlibrary loan request statuses - delete status",
+      "description": "Delete status"
     }
+
   ],
   "launchDescriptor": {
     "dockerImage": "${artifactId}:${version}",

@@ -13,6 +13,8 @@ types:
   requests:   !include mod-ill-ramls/schemas/requests.json
   supplier:    !include mod-ill-ramls/schemas/supplier.json
   suppliers:   !include mod-ill-ramls/schemas/suppliers.json
+  status:    !include mod-ill-ramls/schemas/status.json
+  statuses:   !include mod-ill-ramls/schemas/statuses.json
   errors:     !include raml-util/schemas/errors.schema
   parameters: !include raml-util/schemas/parameters.schema
   UUID:
@@ -85,6 +87,32 @@ resourceTypes:
               strict: false
               value: !include mod-ill-ramls/examples/request_post.json
             type: request
+  /statuses:
+      displayName: Statuses
+      type:
+        collection:
+          exampleCollection: !include mod-ill-ramls/examples/statuses.json
+          exampleItem: !include mod-ill-ramls/examples/status.json
+          schemaCollection: statuses
+          schemaItem: status
+      get:
+        description: Retrieve a list of interlibrary loan request statuses
+        is: [pageable]
+      post:
+        description: Create a new interlibrary loan request status
+        is: [validate]
+      /{statusId}:
+        type:
+          collection-item:
+            exampleItem: !include mod-ill-ramls/examples/status.json
+            schema: status
+        get:
+          description: Retrieve an interlibrary loan request status by ID
+        put:
+          description: Update an interlibary loan request status
+          is: [validate]
+        delete:
+          description: Delete an interlibary loan request status
   /connector/{connectorId}:
     displayName: Receive an active/inactive update from a connector
     uriParameters:

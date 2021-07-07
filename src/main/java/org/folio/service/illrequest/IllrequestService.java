@@ -31,12 +31,11 @@ public interface IllrequestService {
   CompletableFuture<Request> getRequestById(String id, Context context, Map<String, String> headers);
 
   /**
-   * This method returns {@link Requests} by query
+   * This method returns {@link Requests}
    *
    * @param offset  offset
    * @param limit   limit
    * @param lang    language
-   * @param query   query
    * @param context Vert.X context
    * @param headers OKAPI headers
    * @return collection of requests{@link Requests}
