@@ -13,8 +13,8 @@ types:
   requests:   !include mod-ill-ramls/schemas/requests.json
   supplier:    !include mod-ill-ramls/schemas/supplier.json
   suppliers:   !include mod-ill-ramls/schemas/suppliers.json
-  status:    !include mod-ill-ramls/schemas/status.json
-  statuses:   !include mod-ill-ramls/schemas/statuses.json
+  status:    !include mod-ill-ramls/schemas/ill-status.json
+  statuses:   !include mod-ill-ramls/schemas/ill-statuses.json
   errors:     !include raml-util/schemas/errors.schema
   parameters: !include raml-util/schemas/parameters.schema
   UUID:
@@ -91,8 +91,8 @@ resourceTypes:
       displayName: Statuses
       type:
         collection:
-          exampleCollection: !include mod-ill-ramls/examples/statuses.json
-          exampleItem: !include mod-ill-ramls/examples/status.json
+          exampleCollection: !include mod-ill-ramls/examples/ill-statuses.json
+          exampleItem: !include mod-ill-ramls/examples/ill-status.json
           schemaCollection: statuses
           schemaItem: status
       get:
@@ -104,7 +104,7 @@ resourceTypes:
       /{statusId}:
         type:
           collection-item:
-            exampleItem: !include mod-ill-ramls/examples/status.json
+            exampleItem: !include mod-ill-ramls/examples/ill-status.json
             schema: status
         get:
           description: Retrieve an interlibrary loan request status by ID
