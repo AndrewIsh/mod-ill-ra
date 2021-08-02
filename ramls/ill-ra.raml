@@ -9,17 +9,17 @@ documentation:
     content: <b>API for interlibrary loan requesting agency</b>
 
 types:
+  submission:    !include mod-ill-ramls/schemas/submission.json
+  submissions:   !include mod-ill-ramls/schemas/submissions.json
+  submissionStatus:     !include mod-ill-ramls/schemas/submission-status.json
+  submissionStatuses:   !include mod-ill-ramls/schemas/submission-statuses.json
   request:    !include mod-ill-ramls/schemas/request.json
   requests:   !include mod-ill-ramls/schemas/requests.json
-  supplier:    !include mod-ill-ramls/schemas/supplier.json
-  suppliers:   !include mod-ill-ramls/schemas/suppliers.json
-  status:    !include mod-ill-ramls/schemas/ill-status.json
-  statuses:   !include mod-ill-ramls/schemas/ill-statuses.json
   errors:     !include raml-util/schemas/errors.schema
   parameters: !include raml-util/schemas/parameters.schema
-  UUID:
-    type: string
-    pattern: ^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-5][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}$
+  #UUID:
+  #  type: string
+  #  pattern: ^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-5][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}$
 
 traits:
   language: !include raml-util/traits/language.raml
@@ -33,19 +33,124 @@ resourceTypes:
   get-only: !include raml-util/rtypes/get-only.raml
 
 /ill-ra:
-#  /suppliers:
-#    displayName: Supplying agencies
-#    type:
-#      collection:
-#        exampleCollection: !include examples/suppliers.json
-#        exampleItem: !include examples/supplier_get.json
-#        schemaCollection: suppliers
-#        schemaItem: supplier
-#    get:
-#      description: Retrieve a list of available supplying agencies
-#      responses:
-#        501:
-#          description: "Not implemented yet"
+  /submissions:
+    displayName: Submissions
+    type:
+      collection:
+        exampleCollection: !include mod-ill-ramls/examples/submissions.json
+        exampleItem: !include mod-ill-ramls/examples/submission.json
+        schemaCollection: submissions
+        schemaItem: submission
+    get:
+      is: [pageable,
+        searchable: {description: "searchable using CQL",
+                        example: "id=\"cf23adf0-61ba-4887-bf82-956c4aae2260\""},
+        ]
+      responses:
+        501:
+          description: "Not implemented yet"
+    post:
+      is: [validate]
+    /{submissionId}:
+      type:
+        collection-item:
+          exampleItem: !include mod-ill-ramls/examples/submission.json
+          schema: submission
+      get:
+        responses:
+          501:
+            description: "Not implemented yet"
+      put:
+        is: [validate]
+        responses:
+          501:
+            description: "Not implemented yet"
+      delete:
+        responses:
+          501:
+            description: "Not implemented yet"
+      /requests:
+        type:
+          collection:
+            exampleCollection: !include mod-ill-ramls/examples/requests.json
+            exampleItem: !include mod-ill-ramls/examples/request.json
+            schemaCollection: requests
+            schemaItem: request
+        get:
+          is: [pageable]
+  /submission-statuses:
+    displayName: Submission Statuses
+    type:
+      collection:
+        exampleCollection: !include mod-ill-ramls/examples/submission-statuses.json
+        exampleItem: !include mod-ill-ramls/examples/submission-status.json
+        schemaCollection: submissionStatuses
+        schemaItem: submissionStatus
+    get:
+      is: [pageable,
+        searchable: {description: "searchable using CQL",
+                        example: "id=\"cf23adf0-61ba-4887-bf82-956c4aae2260\""},
+        ]
+    post:
+      is: [validate]
+    /{statusId}:
+      type:
+        collection-item:
+          exampleItem: !include mod-ill-ramls/examples/submission-status.json
+          schema: submissionStatus
+      get:
+      put:
+        is: [validate]
+      delete:
+  /requests:
+    displayName: Requests
+    type:
+      collection:
+        exampleCollection: !include mod-ill-ramls/examples/requests.json
+        exampleItem: !include mod-ill-ramls/examples/request.json
+        schemaCollection: requests
+        schemaItem: request
+    get:
+      is: [pageable,
+        searchable: {description: "searchable using CQL",
+                        example: "id=\"cf23adf0-61ba-4887-bf82-956c4aae2260\""},
+        ]
+      responses:
+        501:
+          description: "Not implemented yet"
+    post:
+      is: [validate]
+    /{requestId}:
+      type:
+        collection-item:
+          exampleItem: !include mod-ill-ramls/examples/request.json
+          schema: request
+      get:
+        responses:
+          501:
+            description: "Not implemented yet"
+      put:
+        is: [validate]
+        responses:
+          501:
+            description: "Not implemented yet"
+      delete:
+        responses:
+          501:
+            description: "Not implemented yet"
+  # /suppliers:
+  #   displayName: Supplying agencies
+  #   type:
+  #     collection:
+  #       exampleCollection: !include examples/suppliers.json
+  #       exampleItem: !include examples/supplier_get.json
+  #       schemaCollection: suppliers
+  #       schemaItem: supplier
+  #   get:
+  #     description: Retrieve a list of available supplying agencies
+  #     responses:
+  #       501:
+  #         description: "Not implemented yet"
   #/sa_update:
   #  put:
   #    description: Receive an arbitrary request update from a supplier and update the request accordingly
@@ -53,76 +158,16 @@ resourceTypes:
   #    responses:
   #      501:
   #        description: "Not implemented yet"
-  /requests:
-    displayName: Interlibrary loan requests
-    type:
-      collection:
-        exampleCollection: !include mod-ill-ramls/examples/requests.json
-        exampleItem: !include mod-ill-ramls/examples/request_get.json
-        schemaCollection: requests
-        schemaItem: request
-    is: [validate]
-    get:
-      description: Retrieve a list of interlibrary loan requests
-      is: [pageable]
-    post:
-      description: Create a new interlibrary loan request
-    /{requestId}:
-      uriParameters:
-        requestId:
-          description: The UUID of a request
-          type: UUID
-      type:
-        collection-item:
-          exampleItem: !include mod-ill-ramls/examples/request_get.json
-          schema: request
-      is: [validate]
-      get:
-        description: Retrieve an interlibrary loan request by ID
-      put:
-        description: Update an interlibary loan request
-        body:
-          application/json:
-            example:
-              strict: false
-              value: !include mod-ill-ramls/examples/request_post.json
-            type: request
-  /statuses:
-      displayName: Statuses
-      type:
-        collection:
-          exampleCollection: !include mod-ill-ramls/examples/ill-statuses.json
-          exampleItem: !include mod-ill-ramls/examples/ill-status.json
-          schemaCollection: statuses
-          schemaItem: status
-      get:
-        description: Retrieve a list of interlibrary loan request statuses
-        is: [pageable]
-      post:
-        description: Create a new interlibrary loan request status
-        is: [validate]
-      /{statusId}:
-        type:
-          collection-item:
-            exampleItem: !include mod-ill-ramls/examples/ill-status.json
-            schema: status
-        get:
-          description: Retrieve an interlibrary loan request status by ID
-        put:
-          description: Update an interlibary loan request status
-          is: [validate]
-        delete:
-          description: Delete an interlibary loan request status
-  /connector/{connectorId}:
-    displayName: Receive an active/inactive update from a connector
-    uriParameters:
-      connectorId:
-        description: The UUID of the connector
-        type: UUID
-    post:
-      description: Receive an update from a connector informing us that it is active
-    delete:
-      description: Receive an update from a connector informing us that it is inactive
+  #/connector/{connectorId}:
+  #  displayName: Receive an active/inactive update from a connector
+  #  uriParameters:
+  #    connectorId:
+  #      description: The UUID of the connector
+  #      type: UUID
+  #  post:
+  #    description: Receive an update from a connector informing us that it is active
+  #  delete:
+  #    description: Receive an update from a connector informing us that it is inactive
   #      /status:
   #        type:
   #          collection-item:
@@ -158,5 +203,3 @@ resourceTypes:
   #            schema: request
   #        put:
   #          description: Send an arbitrary message to a request's supplier and update the request accordingly
-
-

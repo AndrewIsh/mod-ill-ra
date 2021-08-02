@@ -59,7 +59,7 @@ public class IllrequestStorageService extends BaseService implements IllrequestS
 
   @Override
   @Validate
-  public CompletableFuture<Requests> getRequests(int offset, int limit, String lang, Context context, Map<String, String> headers) {
+  public CompletableFuture<Requests> getRequests(int offset, int limit, String lang, String query, Context context, Map<String, String> headers) {
     CompletableFuture<Requests> future = new CompletableFuture<>();
     HttpClientInterface client = getHttpClient(headers);
     String endpoint = storageService + "requests";
@@ -106,5 +106,20 @@ public class IllrequestStorageService extends BaseService implements IllrequestS
       return null;
     });
     return future;
+  }
+
+  @Override
+  @Validate
+  public CompletableFuture<Void> deleteRequestById(String id, Context context, Map<String, String> headers) {
+    HttpClientInterface client = getHttpClient(headers);
+    String endpoint = storageService + "requests/" + id;
+    return handleDeleteRequest(endpoint, client, headers, logger)
+      .handle((req, t) -> {
+        client.closeClient();
+        if (Objects.nonNull(t)) {
+         throw new CompletionException(t.getCause());
+        }
+        return null;
+      });
   }
 }

@@ -9,10 +9,12 @@ import io.vertx.core.Handler;
 import io.vertx.core.Vertx;
 
 import org.folio.rest.jaxrs.model.Request;
-import org.folio.rest.jaxrs.model.Status;
+import org.folio.rest.jaxrs.model.Submission;
+import org.folio.rest.jaxrs.model.SubmissionStatus;
 import org.folio.rest.jaxrs.resource.IllRa;
+import org.folio.service.illsubmission.IllsubmissionService;
 import org.folio.service.illrequest.IllrequestService;
-import org.folio.service.illstatus.IllstatusService;
+import org.folio.service.illsubmissionstatus.IllsubmissionstatusService;
 import org.folio.spring.SpringContextUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 
@@ -21,21 +23,73 @@ import java.util.Map;
 
 public class IllRequestsAPI extends BaseApi implements IllRa {
 
+  private static final String SUBMISSIONS_LOCATION_PREFIX = "/submissions/%s";
   private static final String REQUESTS_LOCATION_PREFIX = "/requests/%s";
-  private static final String STATUSES_LOCATION_PREFIX = "/statuses/%s";
+  private static final String SUBMISSION_STATUSES_LOCATION_PREFIX = "/submission-statuses/%s";
 
+  @Autowired
+  private IllsubmissionService illsubmissionService;
   @Autowired
   private IllrequestService illrequestService;
   @Autowired
-  private IllstatusService illstatusService;
+  private IllsubmissionstatusService illsubmissionstatusService;
 
   public IllRequestsAPI() {
     SpringContextUtil.autowireDependencies(this, Vertx.currentContext());
   }
 
   @Override
-  public void getIllRaRequests(int offset, int limit, String lang, Map<String, String> okapiHeaders, Handler<AsyncResult<Response>> asyncResultHandler, Context vertxContext) {
-    illrequestService.getRequests(offset, limit, lang, vertxContext, okapiHeaders)
+  public void getIllRaSubmissions(int offset, int limit, String lang, String query, Map<String, String> okapiHeaders, Handler<AsyncResult<Response>> asyncResultHandler, Context vertxContext) {
+    illsubmissionService.getSubmissions(offset, limit, lang, query, vertxContext, okapiHeaders)
+      .thenAccept(submissions -> asyncResultHandler.handle(succeededFuture(buildOkResponse(submissions))))
+      .exceptionally(t -> handleErrorResponse(asyncResultHandler, t));
+  }
+
+  @Override
+  public void postIllRaSubmissions(String lang, Submission entity, Map<String, String> okapiHeaders, Handler<AsyncResult<Response>> asyncResultHandler, Context vertxContext) {
+    illsubmissionService.createSubmission(entity, vertxContext, okapiHeaders)
+      .thenAccept(sub -> asyncResultHandler.handle(succeededFuture(buildResponseWithLocation(okapiHeaders.get(OKAPI_URL),
+        String.format(SUBMISSIONS_LOCATION_PREFIX, sub.getId()), entity))))
+      .exceptionally(t -> handleErrorResponse(asyncResultHandler, t));
+  }
+
+  @Override
+  public void getIllRaSubmissionsBySubmissionId(String submissionId, String lang, Map<String, String> okapiHeaders, Handler<AsyncResult<Response>> asyncResultHandler, Context vertxContext) {
+    illsubmissionService.getSubmissionById(submissionId, vertxContext, okapiHeaders)
+      .thenAccept(submission -> asyncResultHandler.handle(succeededFuture(buildOkResponse(submission))))
+      .exceptionally(t -> handleErrorResponse(asyncResultHandler, t));
+  }
+
+  @Override
+  public void putIllRaSubmissionsBySubmissionId(String submissionId, String lang, Submission entity, Map<String, String> okapiHeaders, Handler<AsyncResult<Response>> asyncResultHandler, Context vertxContext) {
+    illsubmissionService.updateSubmissionById(submissionId, entity, vertxContext, okapiHeaders)
+      .thenAccept(vVoid -> asyncResultHandler.handle(succeededFuture(buildNoContentResponse())))
+      .exceptionally(t -> handleErrorResponse(asyncResultHandler, t));
+
+  }
+
+  @Override
+  public void deleteIllRaSubmissionsBySubmissionId(String submissionId, String lang, Map<String, String> okapiHeaders, Handler<AsyncResult<Response>> asyncResultHandler, Context vertxContext) {
+    illsubmissionService.deleteSubmissionById(submissionId, vertxContext, okapiHeaders)
+      .thenAccept(vVoid -> asyncResultHandler.handle(succeededFuture(buildNoContentResponse())))
+      .exceptionally(t -> handleErrorResponse(asyncResultHandler, t));
+  }
+
+  @Override
+  public void getIllRaSubmissionsRequestsBySubmissionId(String submissionId, int offset, int limit, String lang, Map<String, String> okapiHeaders, Handler<AsyncResult<Response>> asyncResultHandler, Context vertxContext) {
+    illsubmissionService.getSubmissionRequestsById(submissionId, vertxContext, okapiHeaders)
+      .thenAccept(requests -> asyncResultHandler.handle(succeededFuture(buildOkResponse(requests))))
+      .exceptionally(t -> handleErrorResponse(asyncResultHandler, t));
+  }
+
+  @Override
+  public void postIllRaSubmissionsRequestsBySubmissionId(String submissionId, String lang, Request entity, Map<String, String> okapiHeaders, Handler<AsyncResult<Response>> asyncResultHandler, Context vertxContext) {
+
+  }
+
+  @Override
+  public void getIllRaRequests(int offset, int limit, String lang, String query, Map<String, String> okapiHeaders, Handler<AsyncResult<Response>> asyncResultHandler, Context vertxContext) {
+    illrequestService.getRequests(offset, limit, lang, query, vertxContext, okapiHeaders)
       .thenAccept(requests -> asyncResultHandler.handle(succeededFuture(buildOkResponse(requests))))
       .exceptionally(t -> handleErrorResponse(asyncResultHandler, t));
   }
@@ -64,8 +118,48 @@ public class IllRequestsAPI extends BaseApi implements IllRa {
 
   @Override
   public void deleteIllRaRequestsByRequestId(String requestId, String lang, Map<String, String> okapiHeaders, Handler<AsyncResult<Response>> asyncResultHandler, Context vertxContext) {
+    illrequestService.deleteRequestById(requestId, vertxContext, okapiHeaders)
+      .thenAccept(vVoid -> asyncResultHandler.handle(succeededFuture(buildNoContentResponse())))
+      .exceptionally(t -> handleErrorResponse(asyncResultHandler, t));
   }
 
+  @Override
+  public void getIllRaSubmissionStatuses(int offset, int limit, String query, String lang, Map<String, String> okapiHeaders, Handler<AsyncResult<Response>> asyncResultHandler, Context vertxContext) {
+    illsubmissionstatusService.getSubmissionStatuses(offset, limit, lang, vertxContext, okapiHeaders)
+      .thenAccept(submissionStatuses -> asyncResultHandler.handle(succeededFuture(buildOkResponse(submissionStatuses))))
+      .exceptionally(t -> handleErrorResponse(asyncResultHandler, t));
+  }
+
+  @Override
+  public void postIllRaSubmissionStatuses(String lang, SubmissionStatus entity, Map<String, String> okapiHeaders, Handler<AsyncResult<Response>> asyncResultHandler, Context vertxContext) {
+    illsubmissionstatusService.createSubmissionStatus(entity, vertxContext, okapiHeaders)
+      .thenAccept(submissionStatus -> asyncResultHandler.handle(succeededFuture(buildResponseWithLocation(okapiHeaders.get(OKAPI_URL),
+        String.format(SUBMISSION_STATUSES_LOCATION_PREFIX, submissionStatus.getId()), entity))))
+      .exceptionally(t ->handleErrorResponse(asyncResultHandler, t));
+  }
+
+  @Override
+  public void getIllRaSubmissionStatusesByStatusId(String statusId, String lang, Map<String, String> okapiHeaders, Handler<AsyncResult<Response>> asyncResultHandler, Context vertxContext) {
+    illsubmissionstatusService.getSubmissionStatusById(statusId, vertxContext, okapiHeaders)
+      .thenAccept(submissionStatus -> asyncResultHandler.handle(succeededFuture(buildOkResponse(submissionStatus))))
+      .exceptionally(t -> handleErrorResponse(asyncResultHandler, t));
+  }
+
+  @Override
+  public void putIllRaSubmissionStatusesByStatusId(String statusId, String lang, SubmissionStatus entity, Map<String, String> okapiHeaders, Handler<AsyncResult<Response>> asyncResultHandler, Context vertxContext) {
+    illsubmissionstatusService.updateSubmissionStatusById(statusId, entity, vertxContext, okapiHeaders)
+      .thenAccept(vVoid -> asyncResultHandler.handle(succeededFuture(buildNoContentResponse())))
+      .exceptionally(t -> handleErrorResponse(asyncResultHandler, t));
+  }
+
+  @Override
+  public void deleteIllRaSubmissionStatusesByStatusId(String statusId, String lang, Map<String, String> okapiHeaders, Handler<AsyncResult<Response>> asyncResultHandler, Context vertxContext) {
+    illsubmissionstatusService.deleteSubmissionStatusById(statusId, vertxContext, okapiHeaders)
+      .thenAccept(vVoid -> asyncResultHandler.handle(succeededFuture(buildNoContentResponse())))
+      .exceptionally(t -> handleErrorResponse(asyncResultHandler, t));
+  }
+
+ /*
   @Override
   public void postIllRaConnectorByConnectorId(String connectorId, Map<String, String> okapiHeaders, Handler<AsyncResult<Response>> asyncResultHandler, Context vertxContext) {
 
@@ -84,7 +178,7 @@ public class IllRequestsAPI extends BaseApi implements IllRa {
   }
 
   @Override
-  public void postIllRaStatuses(String lang, Status status, Map<String, String> okapiHeaders, Handler<AsyncResult<Response>> asyncResultHandler, Context vertxContext) {
+  public void postIllRaStatuses(String lang,  status, Map<String, String> okapiHeaders, Handler<AsyncResult<Response>> asyncResultHandler, Context vertxContext) {
     illstatusService.createStatus(status, vertxContext, okapiHeaders)
       .thenAccept(stat -> asyncResultHandler.handle(succeededFuture(buildResponseWithLocation(okapiHeaders.get(OKAPI_URL),
         String.format(STATUSES_LOCATION_PREFIX, stat.getId()), status))))
@@ -111,4 +205,5 @@ public class IllRequestsAPI extends BaseApi implements IllRa {
       .thenAccept(vVoid -> asyncResultHandler.handle(succeededFuture(buildNoContentResponse())))
       .exceptionally(t -> handleErrorResponse(asyncResultHandler, t));
   }
+  */
 }

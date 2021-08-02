@@ -1,11 +1,11 @@
-package org.folio.service.illstatus;
+package org.folio.service.illsubmissionstatus;
 
 import io.vertx.core.Context;
 import io.vertx.core.json.JsonObject;
 import org.folio.exception.HttpException;
 import org.folio.rest.annotations.Validate;
-import org.folio.rest.jaxrs.model.Status;
-import org.folio.rest.jaxrs.model.Statuses;
+import org.folio.rest.jaxrs.model.SubmissionStatus;
+import org.folio.rest.jaxrs.model.SubmissionStatuses;
 import org.folio.rest.tools.client.interfaces.HttpClientInterface;
 import org.folio.service.BaseService;
 
@@ -17,17 +17,17 @@ import java.util.concurrent.CompletionException;
 import static org.apache.commons.lang3.StringUtils.isEmpty;
 import static org.folio.exception.ErrorCodes.MISMATCH_BETWEEN_ID_IN_PATH_AND_BODY;
 
-public class IllstatusStorageService extends BaseService implements IllstatusService {
+public class IllsubmissionstatusStorageService extends BaseService implements IllsubmissionstatusService {
 
-  private static final String storageService = "/ill-ra-storage/";
+  private static final String storageService = "/ill-ra-storage/submission-statuses/";
 
   @Override
   @Validate
-  public CompletableFuture<Status> createStatus(Status status, Context context, Map<String, String> headers) {
+  public CompletableFuture<SubmissionStatus> createSubmissionStatus(SubmissionStatus status, Context context, Map<String, String> headers) {
     HttpClientInterface client = getHttpClient(headers);
-    return handlePostRequest(JsonObject.mapFrom(status),  storageService + "statuses", client, context, headers, logger)
+    return handlePostRequest(JsonObject.mapFrom(status),  storageService, client, context, headers, logger)
       .thenApply(id -> JsonObject.mapFrom(status.withId(id))
-        .mapTo(Status.class))
+        .mapTo(SubmissionStatus.class))
       .handle((stat, t) -> {
         client.closeClient();
         if (Objects.nonNull(t)) {
@@ -39,12 +39,12 @@ public class IllstatusStorageService extends BaseService implements IllstatusSer
 
   @Override
   @Validate
-  public CompletableFuture<Status> getStatusById(String id, Context context, Map<String, String> headers) {
-    CompletableFuture<Status> future = new CompletableFuture<>();
+  public CompletableFuture<SubmissionStatus> getSubmissionStatusById(String id, Context context, Map<String, String> headers) {
+    CompletableFuture<SubmissionStatus> future = new CompletableFuture<>();
     HttpClientInterface client = getHttpClient(headers);
-    String endpoint = storageService + "statuses/" + id;
+    String endpoint = storageService + id;
     handleGetRequest(endpoint, client, headers, logger)
-      .thenApply(json -> json.mapTo(Status.class))
+      .thenApply(json -> json.mapTo(SubmissionStatus.class))
       .handle((stat, t) -> {
         client.closeClient();
         if (Objects.nonNull(t)) {
@@ -59,12 +59,11 @@ public class IllstatusStorageService extends BaseService implements IllstatusSer
 
   @Override
   @Validate
-  public CompletableFuture<Statuses> getStatuses(int offset, int limit, String lang, Context context, Map<String, String> headers) {
-    CompletableFuture<Statuses> future = new CompletableFuture<>();
+  public CompletableFuture<SubmissionStatuses> getSubmissionStatuses(int offset, int limit, String lang, Context context, Map<String, String> headers) {
+    CompletableFuture<SubmissionStatuses> future = new CompletableFuture<>();
     HttpClientInterface client = getHttpClient(headers);
-    String endpoint = storageService + "statuses";
-    handleGetRequest(endpoint, client, headers, logger)
-      .thenApply(json -> json.mapTo(Statuses.class))
+    handleGetRequest(storageService, client, headers, logger)
+      .thenApply(json -> json.mapTo(SubmissionStatuses.class))
       .handle((collection, t) -> {
         client.closeClient();
         if (Objects.nonNull(t)) {
@@ -79,7 +78,7 @@ public class IllstatusStorageService extends BaseService implements IllstatusSer
 
   @Override
   @Validate
-  public CompletableFuture<Void> updateStatusById(String id, Status updatedStatus, Context context, Map<String, String> headers) {
+  public CompletableFuture<Void> updateSubmissionStatusById(String id, SubmissionStatus updatedStatus, Context context, Map<String, String> headers) {
     CompletableFuture<Void> future = new CompletableFuture<>();
     if (isEmpty(updatedStatus.getId())) {
       updatedStatus.setId(id);
@@ -88,9 +87,9 @@ public class IllstatusStorageService extends BaseService implements IllstatusSer
       return future;
     }
     HttpClientInterface client = getHttpClient(headers);
-    String endpoint = storageService + "statuses/" + id;
+    String endpoint = storageService + id;
     handleGetRequest(endpoint, client, headers, logger)
-      .thenApply(existingStatusJson -> existingStatusJson.mapTo(Status.class))
+      .thenApply(existingStatusJson -> existingStatusJson.mapTo(SubmissionStatus.class))
       .thenAccept(ok -> handlePutRequest(endpoint, JsonObject.mapFrom(updatedStatus), client, headers, logger)
         .handle((stat, t) -> {
           client.closeClient();
@@ -109,9 +108,9 @@ public class IllstatusStorageService extends BaseService implements IllstatusSer
   }
 
   @Override
-  public CompletableFuture<Void> deleteStatusById(String id, Context context, Map<String, String> headers) {
+  public CompletableFuture<Void> deleteSubmissionStatusById(String id, Context context, Map<String, String> headers) {
     HttpClientInterface client = getHttpClient(headers);
-    String endpoint = storageService + "statuses/" + id;
+    String endpoint = storageService + id;
     return handleDeleteRequest(endpoint, client, headers, logger)
       .handle((stat, t) -> {
         client.closeClient();
@@ -120,6 +119,5 @@ public class IllstatusStorageService extends BaseService implements IllstatusSer
         }
         return null;
       });
-
   }
 }

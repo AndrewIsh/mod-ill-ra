@@ -35,12 +35,13 @@ public interface IllrequestService {
    *
    * @param offset  offset
    * @param limit   limit
+   * @param query   query
    * @param lang    language
    * @param context Vert.X context
    * @param headers OKAPI headers
    * @return collection of requests{@link Requests}
    */
-  CompletableFuture<Requests> getRequests(int offset, int limit, String lang, Context context, Map<String, String> headers);
+  CompletableFuture<Requests> getRequests(int offset, int limit, String lang, String query, Context context, Map<String, String> headers);
 
   /**
    * This method updates {@link Request} by ID
@@ -52,4 +53,14 @@ public interface IllrequestService {
    * @return {@link Request}
    */
   CompletableFuture<Void> updateRequestById(String id, Request updatedRequest, Context context, Map<String, String> headers);
+
+  /**
+   * This method deletes {@link Request} by ID
+   *
+   * @param id                  deleted request's id
+   * @param context             Vert.X context
+   * @param headers             OKAPI headers
+   * @return void
+   */
+  CompletableFuture<Void> deleteRequestById(String id, Context context, Map<String, String> headers);
 }
