@@ -136,27 +136,27 @@
       "description": "Delete submission"
     },
     {
-      "permissionName": "ill-ra.submission-statuses.collection.get",
+      "permissionName": "ill-ra.submissionStatuses.collection.get",
       "displayName": "Interlibrary loan submission statuses - get submission statuses collection",
       "description": "Get submission statuses collection"
     },
     {
-      "permissionName": "ill-ra.submission-statuses.collection.post",
+      "permissionName": "ill-ra.submissionStatuses.collection.post",
       "displayName": "Interlibrary loan submission statuses - create submission status",
       "description": "Create submission status"
     },
     {
-      "permissionName": "ill-ra.submission-statuses.item.get",
+      "permissionName": "ill-ra.submissionStatuses.item.get",
       "displayName": "Interlibrary loan submission statuses - get submission status",
       "description": "Get submission status"
     },
     {
-      "permissionName": "ill-ra.submission-statuses.item.put",
+      "permissionName": "ill-ra.submissionStatuses.item.put",
       "displayName": "Interlibrary loan submission statuses - update submission status",
       "description": "Update submission status"
     },
     {
-      "permissionName": "ill-ra.submission-statuses.item.delete",
+      "permissionName": "ill-ra.submissionStatuses.item.delete",
       "displayName": "Interlibrary loan submission statuses - delete submission status",
       "description": "Delete submission status"
     },
