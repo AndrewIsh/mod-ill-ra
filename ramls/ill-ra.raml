@@ -9,12 +9,14 @@ documentation:
     content: <b>API for interlibrary loan requesting agency</b>
 
 types:
-  submission:    !include mod-ill-ramls/schemas/submission.json
-  submissions:   !include mod-ill-ramls/schemas/submissions.json
-  submissionStatus:     !include mod-ill-ramls/schemas/submission-status.json
-  submissionStatuses:   !include mod-ill-ramls/schemas/submission-statuses.json
-  request:    !include mod-ill-ramls/schemas/request.json
-  requests:   !include mod-ill-ramls/schemas/requests.json
+  saRequest_Request:    !include mod-ill-ramls/schemas/sa-request/request/request.schema
+  saRequest_Response:    !include mod-ill-ramls/schemas/sa-request/response/request-confirmation.schema
+  submission:    !include mod-ill-ramls/schemas/submission/submission.json
+  submissions:   !include mod-ill-ramls/schemas/submission/submissions.json
+  submissionStatus:     !include mod-ill-ramls/schemas/submission-status/submission-status.json
+  submissionStatuses:   !include mod-ill-ramls/schemas/submission-status/submission-statuses.json
+  request:    !include mod-ill-ramls/schemas/request/request.json
+  requests:   !include mod-ill-ramls/schemas/request/requests.json
   errors:     !include raml-util/schemas/errors.schema
   parameters: !include raml-util/schemas/parameters.schema
   #UUID:
@@ -37,8 +39,8 @@ resourceTypes:
     displayName: Submissions
     type:
       collection:
-        exampleCollection: !include mod-ill-ramls/examples/submissions.json
-        exampleItem: !include mod-ill-ramls/examples/submission.json
+        exampleCollection: !include mod-ill-ramls/examples/submission/submissions.json
+        exampleItem: !include mod-ill-ramls/examples/submission/submission.json
         schemaCollection: submissions
         schemaItem: submission
     get:
@@ -54,7 +56,7 @@ resourceTypes:
     /{submissionId}:
       type:
         collection-item:
-          exampleItem: !include mod-ill-ramls/examples/submission.json
+          exampleItem: !include mod-ill-ramls/examples/submission/submission.json
           schema: submission
       get:
         responses:
@@ -72,8 +74,8 @@ resourceTypes:
       /requests:
         type:
           collection:
-            exampleCollection: !include mod-ill-ramls/examples/requests.json
-            exampleItem: !include mod-ill-ramls/examples/request.json
+            exampleCollection: !include mod-ill-ramls/examples/request/requests.json
+            exampleItem: !include mod-ill-ramls/examples/request/request.json
             schemaCollection: requests
             schemaItem: request
         get:
@@ -82,8 +84,8 @@ resourceTypes:
     displayName: Submission Statuses
     type:
       collection:
-        exampleCollection: !include mod-ill-ramls/examples/submission-statuses.json
-        exampleItem: !include mod-ill-ramls/examples/submission-status.json
+        exampleCollection: !include mod-ill-ramls/examples/submission-status/submission-statuses.json
+        exampleItem: !include mod-ill-ramls/examples/submission-status/submission-status.json
         schemaCollection: submissionStatuses
         schemaItem: submissionStatus
     get:
@@ -96,7 +98,7 @@ resourceTypes:
     /{statusId}:
       type:
         collection-item:
-          exampleItem: !include mod-ill-ramls/examples/submission-status.json
+          exampleItem: !include mod-ill-ramls/examples/submission-status/submission-status.json
           schema: submissionStatus
       get:
       put:
@@ -106,8 +108,8 @@ resourceTypes:
     displayName: Requests
     type:
       collection:
-        exampleCollection: !include mod-ill-ramls/examples/requests.json
-        exampleItem: !include mod-ill-ramls/examples/request.json
+        exampleCollection: !include mod-ill-ramls/examples/request/requests.json
+        exampleItem: !include mod-ill-ramls/examples/request/request.json
         schemaCollection: requests
         schemaItem: request
     get:
@@ -123,7 +125,7 @@ resourceTypes:
     /{requestId}:
       type:
         collection-item:
-          exampleItem: !include mod-ill-ramls/examples/request.json
+          exampleItem: !include mod-ill-ramls/examples/request/request.json
           schema: request
       get:
         responses:
@@ -171,35 +173,35 @@ resourceTypes:
   #      /status:
   #        type:
   #          collection-item:
-  #            exampleItem: !include mod-ill-ramls/examples/request_post.json
+  #            exampleItem: !include mod-ill-ramls/examples/request/request_post.json
   #            schema: request
   #        put:
   #          description: Update an interlibary loan request with it's current status from the supplier
   #      /retry:
   #        type:
   #          collection-item:
-  #            exampleItem: !include mod-ill-ramls/examples/request_post.json
+  #            exampleItem: !include mod-ill-ramls/examples/request/request_post.json
   #            schema: request
   #        put:
   #          description: Request a retry from a request's supplier and update the request accordingly
   #      /reminder:
   #        type:
   #          collection-item:
-  #            exampleItem: !include mod-ill-ramls/examples/request_post.json
+  #            exampleItem: !include mod-ill-ramls/examples/request/request_post.json
   #            schema: request
   #        put:
   #          description: Send a reminder to a request's supplier and update the request accordingly
   #      /renew:
   #        type:
   #          collection-item:
-  #            exampleItem: !include mod-ill-ramls/examples/request_post.json
+  #            exampleItem: !include mod-ill-ramls/examples/request/request_post.json
   #            schema: request
   #        put:
   #          description: Request a renewal from a request's supplier and update the request accordingly
   #      /notify:
   #        type:
   #          collection-item:
-  #            exampleItem: !include mod-ill-ramls/examples/request_post.json
+  #            exampleItem: !include mod-ill-ramls/examples/request/request_post.json
   #            schema: request
   #        put:
   #          description: Send an arbitrary message to a request's supplier and update the request accordingly
