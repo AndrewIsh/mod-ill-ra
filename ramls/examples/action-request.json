@@ -1,0 +1,26 @@
+{
+  "actionName": "request",
+  "connector": "BLDSS",
+  "actionPayload": {
+    "Header": {
+      "RequestingAgencyId": {
+        "AgencyIdType": "ISIL",
+        "AgencyIdValue": "GB-WlAbUW"
+      },
+      "SupplyingAgencyId": {
+        "AgencyIdType": "ISIL",
+        "AgencyIdValue": "GB-Uk"
+      },
+      "timestamp": "2021-10-13T14:28:00Z",
+      "RequestingAgencyRequestId": "83266238-6147-4b18-b3b9-90b29a69ed83"
+    },
+    "BibliographicInfo": {
+      "SupplierUniqueRecordId": "ETOCRN370903711",
+      "TitleOfComponent": "Magnetic resonance in medicine"
+    },
+    "ServiceInfo": {
+      "RequestType": "new",
+      "ServiceType": "Copy"
+    }
+  }
+}

@@ -8,18 +8,23 @@ import io.vertx.core.Context;
 import io.vertx.core.Handler;
 import io.vertx.core.Vertx;
 
-import org.folio.rest.jaxrs.model.Request;
-import org.folio.rest.jaxrs.model.Submission;
-import org.folio.rest.jaxrs.model.SubmissionStatus;
+import io.vertx.core.json.JsonObject;
+import org.folio.domain.SubmittableRequest;
+import org.folio.domain.SubmittableSubmission;
+import org.folio.rest.jaxrs.model.*;
 import org.folio.rest.jaxrs.resource.IllRa;
 import org.folio.service.illsubmission.IllsubmissionService;
 import org.folio.service.illrequest.IllrequestService;
+import org.folio.service.illsubmission.IllsubmissionStorageService;
 import org.folio.service.illsubmissionstatus.IllsubmissionstatusService;
 import org.folio.spring.SpringContextUtil;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.folio.util.DateTimeUtil;
 
 import javax.ws.rs.core.Response;
+import java.util.Date;
 import java.util.Map;
+import java.util.concurrent.CompletableFuture;
 
 public class IllRequestsAPI extends BaseApi implements IllRa {
 
@@ -36,6 +41,33 @@ public class IllRequestsAPI extends BaseApi implements IllRa {
 
   public IllRequestsAPI() {
     SpringContextUtil.autowireDependencies(this, Vertx.currentContext());
+  }
+
+  private CompletableFuture<Submission> submitSubmission(Submission submission, Map<String, String> okapiHeaders, Handler<AsyncResult<Response>> asyncResultHandler, Context vertxContext) {
+    return illsubmissionService.createSubmission(submission, vertxContext, okapiHeaders);
+  }
+
+  private CompletableFuture<Request> submitRequest(Request request, Map<String, String> okapiHeaders, Handler<AsyncResult<Response>> asyncResultHandler, Context vertxContext) {
+    return illrequestService.createRequest(request, vertxContext, okapiHeaders);
+  }
+
+  @Override
+  public void postIllRaSaRequest(SaRequestRequest request, Map<String, String> okapiHeaders, Handler<AsyncResult<Response>> asyncResultHandler, Context vertxContext) {
+    Submission submission = new SubmittableSubmission(request).build();
+    // First create the submission
+    submitSubmission(submission, okapiHeaders, asyncResultHandler, vertxContext)
+      .thenApply((createdSub) -> {
+        // Create request using the created submission
+        Request req = new SubmittableRequest(createdSub, request).build();
+        return submitRequest(req, okapiHeaders, asyncResultHandler, vertxContext)
+          .thenAccept(successfulRequest -> asyncResultHandler.handle(succeededFuture(buildOkResponse(successfulRequest))))
+          .exceptionally(t -> handleErrorResponse(asyncResultHandler, t));
+        // TODO: Finally send the request to the supplying agency
+        // Assemble missing parts of ISO18626 request
+        // Create local request if appropriate
+        // Make request with supplier
+        // Return result
+      });
   }
 
   @Override

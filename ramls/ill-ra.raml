@@ -35,6 +35,24 @@ resourceTypes:
   get-only: !include raml-util/rtypes/get-only.raml
 
 /ill-ra:
+  /sa-request:
+    post:
+      displayName: Make a request to a supplying agency
+      description: Provides a JSON equivalent of an ISO18626 "Request" endpoint. The body is a subset of that specified by ISO18626, the included parts are those that cannot be supplied by the system
+      body:
+        application/json:
+          type: saRequest_Request
+          examples:
+            ex: !include mod-ill-ramls/examples/sa-request/request/request.json
+      responses:
+        201:
+          description: Returns success body for request submission made
+          body:
+            application/json:
+              type: saRequest_Response
+              example:
+                strict: false
+                value: !include mod-ill-ramls/examples/sa-request/response/request-confirmation.json
   /submissions:
     displayName: Submissions
     type:

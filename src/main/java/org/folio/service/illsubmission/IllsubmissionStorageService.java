@@ -9,7 +9,6 @@ import org.folio.rest.jaxrs.model.Submission;
 import org.folio.rest.jaxrs.model.Submissions;
 import org.folio.rest.tools.client.interfaces.HttpClientInterface;
 import org.folio.service.BaseService;
-import org.folio.service.illsubmission.IllsubmissionService;
 
 import java.util.Map;
 import java.util.Objects;
@@ -27,7 +26,7 @@ public class IllsubmissionStorageService extends BaseService implements Illsubmi
   @Validate
   public CompletableFuture<Submission> createSubmission(Submission submission, Context context, Map<String, String> headers) {
     HttpClientInterface client = getHttpClient(headers);
-    return handlePostRequest(JsonObject.mapFrom(submission),  storageService + "submissions", client, context, headers, logger)
+    return handlePostRequest(JsonObject.mapFrom(submission), storageService, client, context, headers, logger)
       .thenApply(id -> JsonObject.mapFrom(submission.withId(id))
         .mapTo(Submission.class))
       .handle((req, t) -> {
