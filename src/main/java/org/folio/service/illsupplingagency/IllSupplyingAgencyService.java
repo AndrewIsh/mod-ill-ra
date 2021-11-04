@@ -3,6 +3,9 @@ package org.folio.service.illsupplingagency;
 import io.vertx.core.Context;
 import io.vertx.core.json.JsonObject;
 import org.folio.rest.jaxrs.model.SaRequestResponse;
+import org.folio.rest.jaxrs.model.supplying_agency_message_storage.request.SupplyingAgencyMessageStorageRequest;
+import org.folio.rest.jaxrs.model.supplying_agency_message_storage.response.SupplyingAgencyMessageStorageResponse;
+import org.folio.rest.tools.client.interfaces.HttpClientInterface;
 import org.folio.service.BaseService;
 import static org.folio.config.Constants.CONNECTOR_CONNECT_TIMEOUT;
 import static org.folio.config.Constants.CONNECTOR_RESPONSE_TIMEOUT;
@@ -11,7 +14,9 @@ import java.net.URI;
 import java.net.http.*;
 import java.time.Duration;
 import java.util.Map;
+import java.util.Objects;
 import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.CompletionException;
 
 public class IllSupplyingAgencyService extends BaseService {
 
@@ -46,4 +51,22 @@ public class IllSupplyingAgencyService extends BaseService {
     CompletableFuture<HttpResponse<String>> future = client.sendAsync(builtRequest, HttpResponse.BodyHandlers.ofString());
     return future.thenApply(apiResponse -> new JsonObject(apiResponse.body()).mapTo(SaRequestResponse.class));
   }
+
+  public CompletableFuture<SupplyingAgencyMessageStorageResponse> storeSupplierMessage(SupplyingAgencyMessageStorageRequest message, String requestId, Context context, Map<String, String> headers) {
+    // TODO: Remove me, I am just hardcoding the connector port,
+    // ultimately this will just be on OKAPI and we'll target by URL
+    String url = "http://localhost:5555/ill-ra-storage/";
+    HttpClientInterface client = getHttpClient(headers);
+    return handlePostRequest(JsonObject.mapFrom(message), url + "messages", client, context, headers, logger)
+      .thenApply(id -> JsonObject.mapFrom(message.withMessage(id))
+          .mapTo(SupplyingAgencyMessageStorageResponse.class))
+      .handle((req, t) -> {
+        client.closeClient();
+        if (Objects.nonNull(t)) {
+          throw new CompletionException(t.getCause());
+        }
+        return req;
+      });
+  }
+
 }

@@ -16,16 +16,15 @@ import java.util.concurrent.CompletionException;
 
 import static org.apache.commons.lang3.StringUtils.isEmpty;
 import static org.folio.exception.ErrorCodes.MISMATCH_BETWEEN_ID_IN_PATH_AND_BODY;
+import static org.folio.config.Constants.STORAGE_SERVICE;
 
 public class IllrequestStorageService extends BaseService implements IllrequestService {
-
-  private static final String storageService = "/ill-ra-storage/";
 
   @Override
   @Validate
   public CompletableFuture<Request> createRequest(Request request, Context context, Map<String, String> headers) {
     HttpClientInterface client = getHttpClient(headers);
-    return handlePostRequest(JsonObject.mapFrom(request),  storageService + "requests", client, context, headers, logger)
+    return handlePostRequest(JsonObject.mapFrom(request),  STORAGE_SERVICE + "requests", client, context, headers, logger)
       .thenApply(id -> JsonObject.mapFrom(request.withId(id))
         .mapTo(Request.class))
       .handle((req, t) -> {
@@ -42,7 +41,7 @@ public class IllrequestStorageService extends BaseService implements IllrequestS
   public CompletableFuture<Request> getRequestById(String id, Context context, Map<String, String> headers) {
     CompletableFuture<Request> future = new CompletableFuture<>();
     HttpClientInterface client = getHttpClient(headers);
-    String endpoint = storageService + "requests/" + id;
+    String endpoint = STORAGE_SERVICE + "requests/" + id;
     handleGetRequest(endpoint, client, headers, logger)
       .thenApply(json -> json.mapTo(Request.class))
       .handle((request, t) -> {
@@ -62,7 +61,7 @@ public class IllrequestStorageService extends BaseService implements IllrequestS
   public CompletableFuture<Requests> getRequests(int offset, int limit, String lang, String query, Context context, Map<String, String> headers) {
     CompletableFuture<Requests> future = new CompletableFuture<>();
     HttpClientInterface client = getHttpClient(headers);
-    String endpoint = storageService + "requests";
+    String endpoint = STORAGE_SERVICE + "requests";
     handleGetRequest(endpoint, client, headers, logger)
       .thenApply(json -> json.mapTo(Requests.class))
       .handle((collection, t) -> {
@@ -88,7 +87,7 @@ public class IllrequestStorageService extends BaseService implements IllrequestS
       return future;
     }
     HttpClientInterface client = getHttpClient(headers);
-    String endpoint = storageService + "requests/" + id;
+    String endpoint = STORAGE_SERVICE + "requests/" + id;
     handleGetRequest(endpoint, client, headers, logger)
       .thenApply(existingRequestJson -> existingRequestJson.mapTo(Request.class))
       .thenAccept(ok -> handlePutRequest(endpoint, JsonObject.mapFrom(updatedRequest), client, headers, logger)
@@ -112,7 +111,7 @@ public class IllrequestStorageService extends BaseService implements IllrequestS
   @Validate
   public CompletableFuture<Void> deleteRequestById(String id, Context context, Map<String, String> headers) {
     HttpClientInterface client = getHttpClient(headers);
-    String endpoint = storageService + "requests/" + id;
+    String endpoint = STORAGE_SERVICE + "requests/" + id;
     return handleDeleteRequest(endpoint, client, headers, logger)
       .handle((req, t) -> {
         client.closeClient();

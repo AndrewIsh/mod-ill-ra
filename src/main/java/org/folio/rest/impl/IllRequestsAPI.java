@@ -14,6 +14,7 @@ import org.folio.domain.SubmittableRequest;
 import org.folio.domain.SubmittableSubmission;
 import org.folio.domain.SupplyingAgency;
 import org.folio.rest.jaxrs.model.*;
+import org.folio.rest.jaxrs.model.supplying_agency_message_storage.request.SupplyingAgencyMessageStorageRequest;
 import org.folio.rest.jaxrs.resource.IllRa;
 import org.folio.service.illsubmission.IllsubmissionService;
 import org.folio.service.illrequest.IllrequestService;
@@ -204,26 +205,42 @@ public class IllRequestsAPI extends BaseApi implements IllRa {
   public void postIllRaSaUpdate(SaMessageRequest entity, Map<String, String> okapiHeaders, Handler<AsyncResult<Response>> asyncResultHandler, Context vertxContext) {
     // We've received an update from a supplier, act on it
 
-    // Gather what we need for the response
-    SupplyingAgencyMessageHeader header = entity.getHeader();
-    SupplyingAgencyMessageInfo info = entity.getMessageInfo();
-    String reasonForMessage = info.getReasonForMessage().toString();
-    String now = DateTimeUtils.dtToString(ZonedDateTime.now(), ISO18626_DATE_FORMAT);
+    // First store the message
+    String requestId = entity.getHeader().getRequestingAgencyRequestId();
+    // We store the entire message
+    String message = JsonObject.mapFrom(entity).toString();
+    SupplyingAgencyMessageStorageRequest samsr = new SupplyingAgencyMessageStorageRequest()
+      .withRequestId(requestId)
+      .withMessage(message);
+    IllSupplyingAgencyService isas = new IllSupplyingAgencyService();
+    isas.storeSupplierMessage(samsr, requestId, vertxContext, okapiHeaders)
+      .thenAccept(vVoid -> {
+        // If we managed to store the message, we can construct and return
+        // a confirmation
+        //
+        // Gather what we need for the confirmation
+        SupplyingAgencyMessageHeader header = entity.getHeader();
+        SupplyingAgencyMessageInfo info = entity.getMessageInfo();
+        String reasonForMessage = info.getReasonForMessage().toString();
+        String now = DateTimeUtils.dtToString(ZonedDateTime.now(), ISO18626_DATE_FORMAT);
 
-    SupplyingAgencyConfirmationHeader.ReasonForMessage responseReason = SupplyingAgencyConfirmationHeader.ReasonForMessage.fromValue(reasonForMessage);
+        SupplyingAgencyConfirmationHeader.ReasonForMessage responseReason = SupplyingAgencyConfirmationHeader.ReasonForMessage.fromValue(reasonForMessage);
 
-    SupplyingAgencyConfirmationHeader supplyingAgencyConfirmationHeader = new SupplyingAgencyConfirmationHeader()
-      .withSupplyingAgencyId(header.getSupplyingAgencyId())
-      .withRequestingAgencyId(header.getRequestingAgencyId())
-      .withTimestamp(now)
-      .withRequestingAgencyRequestId(header.getRequestingAgencyRequestId())
-      .withTimestampReceived(now)
-      .withMessageStatus(SupplyingAgencyConfirmationHeader.MessageStatus.OK)
-      .withReasonForMessage(responseReason);
-    SaMessageResponse response = new SaMessageResponse()
-      .withHeader(supplyingAgencyConfirmationHeader);
+        SupplyingAgencyConfirmationHeader supplyingAgencyConfirmationHeader = new SupplyingAgencyConfirmationHeader()
+          .withSupplyingAgencyId(header.getSupplyingAgencyId())
+          .withRequestingAgencyId(header.getRequestingAgencyId())
+          .withTimestamp(now)
+          .withRequestingAgencyRequestId(header.getRequestingAgencyRequestId())
+          .withTimestampReceived(now)
+          .withMessageStatus(SupplyingAgencyConfirmationHeader.MessageStatus.OK)
+          .withReasonForMessage(responseReason);
+        SaMessageResponse response = new SaMessageResponse()
+          .withHeader(supplyingAgencyConfirmationHeader);
 
-    asyncResultHandler.handle(succeededFuture(buildOkResponse(response)));
+        asyncResultHandler.handle(succeededFuture(buildOkResponse(response)));
+      })
+      .exceptionally(t -> handleErrorResponse(asyncResultHandler, t));
+
   }
 /*
   @Override

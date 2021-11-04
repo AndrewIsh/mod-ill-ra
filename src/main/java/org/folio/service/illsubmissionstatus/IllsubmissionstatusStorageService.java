@@ -8,6 +8,7 @@ import org.folio.rest.jaxrs.model.SubmissionStatus;
 import org.folio.rest.jaxrs.model.SubmissionStatuses;
 import org.folio.rest.tools.client.interfaces.HttpClientInterface;
 import org.folio.service.BaseService;
+import static org.folio.config.Constants.STORAGE_SERVICE;
 
 import java.util.Map;
 import java.util.Objects;
@@ -19,7 +20,7 @@ import static org.folio.exception.ErrorCodes.MISMATCH_BETWEEN_ID_IN_PATH_AND_BOD
 
 public class IllsubmissionstatusStorageService extends BaseService implements IllsubmissionstatusService {
 
-  private static final String storageService = "/ill-ra-storage/submission-statuses/";
+  private static final String storageService = STORAGE_SERVICE + "submission-statuses/";
 
   @Override
   @Validate
