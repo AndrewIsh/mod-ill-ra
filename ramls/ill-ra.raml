@@ -11,6 +11,8 @@ documentation:
 types:
   saRequest_Request:    !include mod-ill-ramls/schemas/sa-request/request/request.schema
   saRequest_Response:    !include mod-ill-ramls/schemas/sa-request/response/request-confirmation.schema
+  saMessage_Request:    !include mod-ill-ramls/schemas/ISO18626/supplying-agency-message.schema
+  saMessage_Response:    !include mod-ill-ramls/schemas/ISO18626/supplying-agency-message-confirmation.schema
   submission:    !include mod-ill-ramls/schemas/submission/submission.json
   submissions:   !include mod-ill-ramls/schemas/submission/submissions.json
   submissionStatus:     !include mod-ill-ramls/schemas/submission-status/submission-status.json
@@ -158,6 +160,20 @@ resourceTypes:
         responses:
           501:
             description: "Not implemented yet"
+  /sa-update:
+    post:
+      description: Receive an arbitrary request update from a supplier and update the request accordingly
+      body:
+        application/json:
+          type: saMessage_Request
+      is: [validate]
+      responses:
+        200:
+          body:
+            application/json:
+              type: saMessage_Response
+        501:
+          description: "Not implemented yet"
   # /suppliers:
   #   displayName: Supplying agencies
   #   type:
@@ -171,13 +187,6 @@ resourceTypes:
   #     responses:
   #       501:
   #         description: "Not implemented yet"
-  #/sa_update:
-  #  put:
-  #    description: Receive an arbitrary request update from a supplier and update the request accordingly
-  #    is: [validate]
-  #    responses:
-  #      501:
-  #        description: "Not implemented yet"
   #/connector/{connectorId}:
   #  displayName: Receive an active/inactive update from a connector
   #  uriParameters:

@@ -1,6 +1,7 @@
 package org.folio.rest.impl;
 
 import static io.vertx.core.Future.succeededFuture;
+import static org.folio.config.Constants.ISO18626_DATE_FORMAT;
 import static org.folio.config.Constants.OKAPI_URL;
 
 import io.vertx.core.AsyncResult;
@@ -19,9 +20,11 @@ import org.folio.service.illrequest.IllrequestService;
 import org.folio.service.illsubmissionstatus.IllsubmissionstatusService;
 import org.folio.service.illsupplingagency.IllSupplyingAgencyService;
 import org.folio.spring.SpringContextUtil;
+import org.folio.util.DateTimeUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import javax.ws.rs.core.Response;
+import java.time.ZonedDateTime;
 import java.util.Map;
 import java.util.concurrent.CompletableFuture;
 
@@ -197,7 +200,32 @@ public class IllRequestsAPI extends BaseApi implements IllRa {
       .exceptionally(t -> handleErrorResponse(asyncResultHandler, t));
   }
 
- /*
+  @Override
+  public void postIllRaSaUpdate(SaMessageRequest entity, Map<String, String> okapiHeaders, Handler<AsyncResult<Response>> asyncResultHandler, Context vertxContext) {
+    // We've received an update from a supplier, act on it
+
+    // Gather what we need for the response
+    SupplyingAgencyMessageHeader header = entity.getHeader();
+    SupplyingAgencyMessageInfo info = entity.getMessageInfo();
+    String reasonForMessage = info.getReasonForMessage().toString();
+    String now = DateTimeUtils.dtToString(ZonedDateTime.now(), ISO18626_DATE_FORMAT);
+
+    SupplyingAgencyConfirmationHeader.ReasonForMessage responseReason = SupplyingAgencyConfirmationHeader.ReasonForMessage.fromValue(reasonForMessage);
+
+    SupplyingAgencyConfirmationHeader supplyingAgencyConfirmationHeader = new SupplyingAgencyConfirmationHeader()
+      .withSupplyingAgencyId(header.getSupplyingAgencyId())
+      .withRequestingAgencyId(header.getRequestingAgencyId())
+      .withTimestamp(now)
+      .withRequestingAgencyRequestId(header.getRequestingAgencyRequestId())
+      .withTimestampReceived(now)
+      .withMessageStatus(SupplyingAgencyConfirmationHeader.MessageStatus.OK)
+      .withReasonForMessage(responseReason);
+    SaMessageResponse response = new SaMessageResponse()
+      .withHeader(supplyingAgencyConfirmationHeader);
+
+    asyncResultHandler.handle(succeededFuture(buildOkResponse(response)));
+  }
+/*
   @Override
   public void postIllRaConnectorByConnectorId(String connectorId, Map<String, String> okapiHeaders, Handler<AsyncResult<Response>> asyncResultHandler, Context vertxContext) {
 

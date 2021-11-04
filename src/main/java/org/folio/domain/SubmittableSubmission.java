@@ -3,8 +3,10 @@ package org.folio.domain;
 import org.folio.rest.jaxrs.model.SaRequestRequest;
 import org.folio.rest.jaxrs.model.Submission;
 import org.folio.rest.jaxrs.model.SubmissionMetadata;
+import org.folio.util.DateTimeUtils;
+import static org.folio.config.Constants.ISO18626_DATE_FORMAT;
 
-import java.util.Date;
+import java.time.ZonedDateTime;
 
 public class SubmittableSubmission {
 
@@ -20,9 +22,9 @@ public class SubmittableSubmission {
   }
 
   public Submission build() {
-   return this.submission
+    return this.submission
       .withSubmissionMetadata(this.metadata)
-      .withSubmissionDate(new Date())
+      .withSubmissionDate(DateTimeUtils.dtToString(ZonedDateTime.now(), ISO18626_DATE_FORMAT))
       // TODO: This will be provided by FOLIO
       .withSubmissionLocation("f31216de-d13a-49d3-b6bd-c6757264a22d")
       // TODO: This will be a default value
