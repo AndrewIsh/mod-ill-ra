@@ -437,13 +437,15 @@
         <version>1.0.2</version>
         <configuration>
           <includes>
-            <include>supplying-agency-message.schema</include>
-            <include>supplying-agency-message-confirmation.schema</include>
+            <include>ISO18626/supplying-agency-message.schema</include>
+            <include>ISO18626/supplying-agency-message-confirmation.schema</include>
+            <include>supplying-agency-message-storage/request/supplying-agency-message-storage-request.schema</include>
+            <include>supplying-agency-message-storage/response/supplying-agency-message-storage-response.schema</include>
           </includes>
           <excludes>
             <exclude>physical-address.schema</exclude>
           </excludes>
-          <sourceDirectory>${basedir}/ramls/mod-ill-ramls/schemas/ISO18626/</sourceDirectory>
+          <sourceDirectory>${basedir}/ramls/mod-ill-ramls/schemas/</sourceDirectory>
           <outputDirectory>${project.build.directory}/generated-sources/raml-jaxrs</outputDirectory>
           <targetPackage>org.folio.rest.jaxrs.model</targetPackage>
           <generateBuilders>true</generateBuilders>
