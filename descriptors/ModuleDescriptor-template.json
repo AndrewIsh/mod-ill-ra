@@ -1,6 +1,6 @@
 {
   "id": "${artifactId}-${version}",
-  "name": "Interlibrary Request Requesting Agency API",
+  "name": "Interlibrary Loan Requesting Agency API",
   "requires": [
     {
       "id": "users",
@@ -37,14 +37,14 @@
           "permissionsRequired": ["ill-ra.submissions.collection.get"]
         },
         {
-          "methods": ["POST"],
-          "pathPattern": "/ill-ra/submissions",
-          "permissionsRequired": ["ill-ra.submissions.collection.post"]
-        },
-        {
           "methods": ["GET"],
           "pathPattern": "/ill-ra/submissions/{id}",
           "permissionsRequired": ["ill-ra.submissions.item.get"]
+        },
+        {
+          "methods": ["POST"],
+          "pathPattern": "/ill-ra/submissions",
+          "permissionsRequired": ["ill-ra.submissions.item.post"]
         },
         {
           "methods": ["PUT"],
@@ -58,18 +58,23 @@
         },
         {
           "methods": ["GET"],
-          "pathPattern": "/ill-ra/requests",
+          "pathPattern": "/ill-ra/submissions/{id}/requests",
           "permissionsRequired": ["ill-ra.requests.collection.get"]
         },
         {
-          "methods": ["POST"],
+          "methods": ["GET"],
           "pathPattern": "/ill-ra/requests",
-          "permissionsRequired": ["ill-ra.requests.collection.post"]
+          "permissionsRequired": ["ill-ra.requests.collection.get"]
         },
         {
           "methods": ["GET"],
           "pathPattern": "/ill-ra/requests/{id}",
           "permissionsRequired": ["ill-ra.requests.item.get"]
+        },
+        {
+          "methods": ["POST"],
+          "pathPattern": "/ill-ra/requests",
+          "permissionsRequired": ["ill-ra.requests.item.post"]
         },
         {
           "methods": ["PUT"],
@@ -84,27 +89,45 @@
         {
           "methods": ["GET"],
           "pathPattern": "/ill-ra/submission-statuses",
-          "permissionsRequired": ["ill-ra.submissionStatuses.collection.get"]
-        },
-        {
-          "methods": ["POST"],
-          "pathPattern": "/ill-ra/submission-statuses",
-          "permissionsRequired": ["ill-ra.submissionStatuses.collection.post"]
+          "permissionsRequired": ["ill-ra.submission-statuses.collection.get"]
         },
         {
           "methods": ["GET"],
           "pathPattern": "/ill-ra/submission-statuses/{id}",
-          "permissionsRequired": ["ill-ra.submissionStatuses.item.get"]
+          "permissionsRequired": ["ill-ra.submission-statuses.item.get"]
+        },
+        {
+          "methods": ["POST"],
+          "pathPattern": "/ill-ra/submission-statuses",
+          "permissionsRequired": ["ill-ra.submission-statuses.item.post"]
         },
         {
           "methods": ["PUT"],
           "pathPattern": "/ill-ra/submission-statuses/{id}",
-          "permissionsRequired": ["ill-ra.submissionStatuses.item.put"]
+          "permissionsRequired": ["ill-ra.submission-statuses.item.put"]
         },
         {
           "methods": ["DELETE"],
           "pathPattern": "/ill-ra/submission-statuses/{id}",
-          "permissionsRequired": ["ill-ra.submissionStatuses.item.delete"]
+          "permissionsRequired": ["ill-ra.submission-statuses.item.delete"]
+        },
+        {
+          "methods": ["GET"],
+          "pathPattern": "/ill-ra/messages",
+          "permissionsRequired": ["ill-ra.messages.collection.get"]
+        },
+        {
+          "methods": ["POST"],
+          "pathPattern": "/ill-ra/messages",
+          "permissionsRequired": ["ill-ra.messages.item.post"]
+        },
+        {
+          "methods": ["POST"],
+          "pathPattern": "/ill-ra/sa-request"
+        },
+        {
+          "methods": ["POST"],
+          "pathPattern": "/ill-ra/sa-update"
         }
       ]
     }
@@ -112,18 +135,18 @@
   "permissionSets": [
     {
       "permissionName": "ill-ra.submissions.collection.get",
-      "displayName": "Interlibrary loan submissions - get submissions collection",
-      "description": "Get submissions collection"
-    },
-    {
-      "permissionName": "ill-ra.submissions.collection.post",
-      "displayName": "Interlibrary loan submissions - create submission",
-      "description": "Create submission"
+      "displayName": "Interlibrary loan submissions - get submission collection",
+      "description": "Get submission collection"
     },
     {
       "permissionName": "ill-ra.submissions.item.get",
       "displayName": "Interlibrary loan submissions - get submission",
       "description": "Get submission"
+    },
+    {
+      "permissionName": "ill-ra.submissions.item.post",
+      "displayName": "Interlibrary loan submissions - create submission",
+      "description": "Create submission"
     },
     {
       "permissionName": "ill-ra.submissions.item.put",
@@ -136,44 +159,19 @@
       "description": "Delete submission"
     },
     {
-      "permissionName": "ill-ra.submissionStatuses.collection.get",
-      "displayName": "Interlibrary loan submission statuses - get submission statuses collection",
-      "description": "Get submission statuses collection"
-    },
-    {
-      "permissionName": "ill-ra.submissionStatuses.collection.post",
-      "displayName": "Interlibrary loan submission statuses - create submission status",
-      "description": "Create submission status"
-    },
-    {
-      "permissionName": "ill-ra.submissionStatuses.item.get",
-      "displayName": "Interlibrary loan submission statuses - get submission status",
-      "description": "Get submission status"
-    },
-    {
-      "permissionName": "ill-ra.submissionStatuses.item.put",
-      "displayName": "Interlibrary loan submission statuses - update submission status",
-      "description": "Update submission status"
-    },
-    {
-      "permissionName": "ill-ra.submissionStatuses.item.delete",
-      "displayName": "Interlibrary loan submission statuses - delete submission status",
-      "description": "Delete submission status"
-    },
-    {
       "permissionName": "ill-ra.requests.collection.get",
-      "displayName": "Interlibrary loan submission requests - get requests collection",
-      "description": "Get requests collection"
-    },
-    {
-      "permissionName": "ill-ra.requests.collection.post",
-      "displayName": "Interlibrary loan requests - create request",
-      "description": "Create request"
+      "displayName": "Interlibrary loan requests - get request collection",
+      "description": "Get request collection"
     },
     {
       "permissionName": "ill-ra.requests.item.get",
       "displayName": "Interlibrary loan requests - get request",
       "description": "Get request"
+    },
+    {
+      "permissionName": "ill-ra.requests.item.post",
+      "displayName": "Interlibrary loan requests - create request",
+      "description": "Create request"
     },
     {
       "permissionName": "ill-ra.requests.item.put",
@@ -184,6 +182,41 @@
       "permissionName": "ill-ra.requests.item.delete",
       "displayName": "Interlibrary loan requests - delete request",
       "description": "Delete request"
+    },
+    {
+      "permissionName": "ill-ra.submission-statuses.collection.get",
+      "displayName": "Interlibrary loan submission statuses- get status collection",
+      "description": "Get status collection"
+    },
+    {
+      "permissionName": "ill-ra.submission-statuses.item.get",
+      "displayName": "Interlibrary loan submission status - get status",
+      "description": "Get status"
+    },
+    {
+      "permissionName": "ill-ra.submission-statuses.item.post",
+      "displayName": "Interlibrary loan submission statuses - create status",
+      "description": "Create status"
+    },
+    {
+      "permissionName": "ill-ra.submission-statuses.item.put",
+      "displayName": "Interlibrary loan submission statuses - update status",
+      "description": "Update status"
+    },
+    {
+      "permissionName": "ill-ra.submission-statuses.item.delete",
+      "displayName": "Interlibrary loan submission statuses - delete status",
+      "description": "Delete status"
+    },
+    {
+      "permissionName": "ill-ra.messages.collection.get",
+      "displayName": "Interlibrary loan supplying agency messages - get messages collection",
+      "description": "Get messages collection"
+    },
+    {
+      "permissionName": "ill-ra.messages.item.post",
+      "displayName": "Interlibrary loan supplying agency messages - create message",
+      "description": "Create message"
     }
   ],
   "launchDescriptor": {
