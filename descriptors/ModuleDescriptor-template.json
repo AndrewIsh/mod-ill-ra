@@ -5,6 +5,8 @@
     {
       "id": "users",
       "version": "15.0"
+      "id": "ill-ra-storage",
+      "version": "1.0"
     }
   ],
   "provides": [
@@ -29,105 +31,125 @@
     },
     {
       "id": "ill-ra",
-      "version": "0.1",
+      "version": "1.0",
       "handlers": [
         {
           "methods": ["GET"],
           "pathPattern": "/ill-ra/submissions",
-          "permissionsRequired": ["ill-ra.submissions.collection.get"]
+          "permissionsRequired": ["ill-ra.submissions.collection.get"],
+          "modulePermissions": ["ill-ra-storage.submissions.collection.get"]
         },
         {
           "methods": ["GET"],
           "pathPattern": "/ill-ra/submissions/{id}",
-          "permissionsRequired": ["ill-ra.submissions.item.get"]
+          "permissionsRequired": ["ill-ra.submissions.item.get"],
+          "modulePermissions": ["ill-ra-storage.submissions.item.get"]
         },
         {
           "methods": ["POST"],
           "pathPattern": "/ill-ra/submissions",
-          "permissionsRequired": ["ill-ra.submissions.item.post"]
+          "permissionsRequired": ["ill-ra.submissions.item.post"],
+          "modulePermissions": ["ill-ra-storage.submissions.item.post"]
         },
         {
           "methods": ["PUT"],
           "pathPattern": "/ill-ra/submissions/{id}",
-          "permissionsRequired": ["ill-ra.submissions.item.put"]
+          "permissionsRequired": ["ill-ra.submissions.item.put"],
+          "modulePermissions": ["ill-ra-storage.submissions.item.put"]
         },
         {
           "methods": ["DELETE"],
           "pathPattern": "/ill-ra/submissions/{id}",
-          "permissionsRequired": ["ill-ra.submissions.item.delete"]
+          "permissionsRequired": ["ill-ra.submissions.item.delete"],
+          "modulePermissions": ["ill-ra-storage.submissions.item.delete"]
         },
         {
           "methods": ["GET"],
           "pathPattern": "/ill-ra/submissions/{id}/requests",
-          "permissionsRequired": ["ill-ra.requests.collection.get"]
+          "permissionsRequired": ["ill-ra.requests.collection.get"],
+          "modulePermissions": ["ill-ra-storage.requests.collection.get"]
         },
         {
           "methods": ["GET"],
           "pathPattern": "/ill-ra/requests",
-          "permissionsRequired": ["ill-ra.requests.collection.get"]
+          "permissionsRequired": ["ill-ra.requests.collection.get"],
+          "modulePermissions": ["ill-ra-storage.requests.collection.get"]
         },
         {
           "methods": ["GET"],
           "pathPattern": "/ill-ra/requests/{id}",
-          "permissionsRequired": ["ill-ra.requests.item.get"]
+          "permissionsRequired": ["ill-ra.requests.item.get"],
+          "modulePermissions": ["ill-ra-storage.requests.item.get"]
         },
         {
           "methods": ["POST"],
           "pathPattern": "/ill-ra/requests",
-          "permissionsRequired": ["ill-ra.requests.item.post"]
+          "permissionsRequired": ["ill-ra.requests.item.post"],
+          "modulePermissions": ["ill-ra-storage.requests.item.post"]
         },
         {
           "methods": ["PUT"],
           "pathPattern": "/ill-ra/requests/{id}",
-          "permissionsRequired": ["ill-ra.requests.item.put"]
+          "permissionsRequired": ["ill-ra.requests.item.put"],
+          "modulePermissions": ["ill-ra-storage.requests.item.put"]
         },
         {
           "methods": ["DELETE"],
           "pathPattern": "/ill-ra/requests/{id}",
-          "permissionsRequired": ["ill-ra.requests.item.delete"]
+          "permissionsRequired": ["ill-ra.requests.item.delete"],
+          "modulePermissions": ["ill-ra-storage.requests.item.delete"]
         },
         {
           "methods": ["GET"],
           "pathPattern": "/ill-ra/submission-statuses",
-          "permissionsRequired": ["ill-ra.submission-statuses.collection.get"]
+          "permissionsRequired": ["ill-ra.submission-statuses.collection.get"],
+          "modulePermissions": ["ill-ra-storage.submission-statuses.collection.get"]
         },
         {
           "methods": ["GET"],
           "pathPattern": "/ill-ra/submission-statuses/{id}",
-          "permissionsRequired": ["ill-ra.submission-statuses.item.get"]
+          "permissionsRequired": ["ill-ra.submission-statuses.item.get"],
+          "modulePermissions": ["ill-ra-storage.submission-statuses.item.get"]
         },
         {
           "methods": ["POST"],
           "pathPattern": "/ill-ra/submission-statuses",
-          "permissionsRequired": ["ill-ra.submission-statuses.item.post"]
+          "permissionsRequired": ["ill-ra.submission-statuses.item.post"],
+          "modulePermissions": ["ill-ra-storage.submission-statuses.item.post"]
         },
         {
           "methods": ["PUT"],
           "pathPattern": "/ill-ra/submission-statuses/{id}",
-          "permissionsRequired": ["ill-ra.submission-statuses.item.put"]
+          "permissionsRequired": ["ill-ra.submission-statuses.item.put"],
+          "modulePermissions": ["ill-ra-storage.submission-statuses.item.put"]
         },
         {
           "methods": ["DELETE"],
           "pathPattern": "/ill-ra/submission-statuses/{id}",
-          "permissionsRequired": ["ill-ra.submission-statuses.item.delete"]
+          "permissionsRequired": ["ill-ra.submission-statuses.item.delete"],
+          "modulePermissions": ["ill-ra-storage.submission-statuses.item.delete"]
         },
         {
           "methods": ["GET"],
           "pathPattern": "/ill-ra/messages",
-          "permissionsRequired": ["ill-ra.messages.collection.get"]
+          "permissionsRequired": ["ill-ra.messages.collection.get"],
+          "modulePermissions": ["ill-ra-storage.messages.collection.get"]
         },
         {
           "methods": ["POST"],
           "pathPattern": "/ill-ra/messages",
-          "permissionsRequired": ["ill-ra.messages.item.post"]
+          "permissionsRequired": ["ill-ra.messages.item.post"],
+          "modulePermissions": ["ill-ra-storage.messages.item.post"]
         },
         {
           "methods": ["POST"],
-          "pathPattern": "/ill-ra/sa-request"
+          "pathPattern": "/ill-ra/sa-request",
+          "permissionsRequired": []
         },
         {
           "methods": ["POST"],
-          "pathPattern": "/ill-ra/sa-update"
+          "pathPattern": "/ill-ra/sa-update",
+          "permissionsRequired": []
         }
       ]
     }
