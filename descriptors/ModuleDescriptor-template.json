@@ -11,7 +11,7 @@
   ],
   "provides": [
     {
-      "id": "_tenant",
+      "id": "_tenant-2.0",
       "version": "2.0",
       "interfaceType": "system",
       "handlers": [
