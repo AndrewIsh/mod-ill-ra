@@ -20,7 +20,7 @@ import static org.folio.exception.ErrorCodes.MISMATCH_BETWEEN_ID_IN_PATH_AND_BOD
 
 public class IllsubmissionStorageService extends BaseService implements IllsubmissionService {
 
-  private static final String storageService = "/ill-ra-storage/submissions/";
+  private static final String storageService = "/ill-ra-storage/submissions";
 
   @Override
   @Validate
@@ -43,7 +43,7 @@ public class IllsubmissionStorageService extends BaseService implements Illsubmi
   public CompletableFuture<Submission> getSubmissionById(String id, Context context, Map<String, String> headers) {
     CompletableFuture<Submission> future = new CompletableFuture<>();
     HttpClientInterface client = getHttpClient(headers);
-    String endpoint = storageService + id;
+    String endpoint = storageService + "/" + id;
     handleGetRequest(endpoint, client, headers, logger)
       .thenApply(json -> json.mapTo(Submission.class))
       .handle((submission, t) -> {
@@ -88,7 +88,7 @@ public class IllsubmissionStorageService extends BaseService implements Illsubmi
       return future;
     }
     HttpClientInterface client = getHttpClient(headers);
-    String endpoint = storageService + id;
+    String endpoint = storageService + "/" + id;
     handleGetRequest(endpoint, client, headers, logger)
       .thenApply(existingSubmissionJson -> existingSubmissionJson.mapTo(Submission.class))
       .thenAccept(ok -> handlePutRequest(endpoint, JsonObject.mapFrom(updatedSubmission), client, headers, logger)
@@ -111,7 +111,7 @@ public class IllsubmissionStorageService extends BaseService implements Illsubmi
   @Override
   public CompletableFuture<Void> deleteSubmissionById(String id, Context context, Map<String, String> headers) {
     HttpClientInterface client = getHttpClient(headers);
-    String endpoint = storageService + id;
+    String endpoint = storageService + "/" + id;
     return handleDeleteRequest(endpoint, client, headers, logger)
       .handle((sub, t) -> {
         client.closeClient();
@@ -126,7 +126,7 @@ public class IllsubmissionStorageService extends BaseService implements Illsubmi
   public CompletableFuture<Requests> getSubmissionRequestsById(String id, Context context, Map<String, String> headers) {
     CompletableFuture<Requests> future = new CompletableFuture<>();
     HttpClientInterface client = getHttpClient(headers);
-    String endpoint = storageService + id + "/requests";
+    String endpoint = storageService + "/" + id + "/requests";
     handleGetRequest(endpoint, client, headers, logger)
       .thenApply(json -> json.mapTo(Requests.class))
       .handle((requests, t) -> {
