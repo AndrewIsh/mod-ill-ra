@@ -3,8 +3,6 @@
   "name": "Interlibrary Loan Requesting Agency API",
   "requires": [
     {
-      "id": "users",
-      "version": "15.0"
       "id": "ill-ra-storage",
       "version": "1.0"
     }
