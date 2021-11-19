@@ -20,7 +20,7 @@ import static org.folio.exception.ErrorCodes.MISMATCH_BETWEEN_ID_IN_PATH_AND_BOD
 
 public class IllsubmissionstatusStorageService extends BaseService implements IllsubmissionstatusService {
 
-  private static final String storageService = STORAGE_SERVICE + "submission-statuses/";
+  private static final String storageService = STORAGE_SERVICE + "submission-statuses";
 
   @Override
   @Validate
@@ -43,7 +43,7 @@ public class IllsubmissionstatusStorageService extends BaseService implements Il
   public CompletableFuture<SubmissionStatus> getSubmissionStatusById(String id, Context context, Map<String, String> headers) {
     CompletableFuture<SubmissionStatus> future = new CompletableFuture<>();
     HttpClientInterface client = getHttpClient(headers);
-    String endpoint = storageService + id;
+    String endpoint = storageService + "/" + id;
     handleGetRequest(endpoint, client, headers, logger)
       .thenApply(json -> json.mapTo(SubmissionStatus.class))
       .handle((stat, t) -> {
@@ -88,7 +88,7 @@ public class IllsubmissionstatusStorageService extends BaseService implements Il
       return future;
     }
     HttpClientInterface client = getHttpClient(headers);
-    String endpoint = storageService + id;
+    String endpoint = storageService + "/" + id;
     handleGetRequest(endpoint, client, headers, logger)
       .thenApply(existingStatusJson -> existingStatusJson.mapTo(SubmissionStatus.class))
       .thenAccept(ok -> handlePutRequest(endpoint, JsonObject.mapFrom(updatedStatus), client, headers, logger)
@@ -111,7 +111,7 @@ public class IllsubmissionstatusStorageService extends BaseService implements Il
   @Override
   public CompletableFuture<Void> deleteSubmissionStatusById(String id, Context context, Map<String, String> headers) {
     HttpClientInterface client = getHttpClient(headers);
-    String endpoint = storageService + id;
+    String endpoint = storageService + "/" + id;
     return handleDeleteRequest(endpoint, client, headers, logger)
       .handle((stat, t) -> {
         client.closeClient();
