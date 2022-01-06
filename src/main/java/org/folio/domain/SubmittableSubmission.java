@@ -28,7 +28,7 @@ public class SubmittableSubmission {
       // TODO: This will be provided by FOLIO
       .withSubmissionLocation("f31216de-d13a-49d3-b6bd-c6757264a22d")
       // TODO: This will be a default value
-      .withStatusId("a140ee38-a987-4bcf-a588-07084006ff12")
+      .withStatusId("49600f35-e2af-45ef-a03c-ee0de7ec3c89")
       // TODO: THis will be provided by FOLIO
       .withUserId("70993f3b-c9e8-4b16-9f5a-21102b39bdcc");
   }

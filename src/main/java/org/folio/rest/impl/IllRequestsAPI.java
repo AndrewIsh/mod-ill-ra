@@ -89,6 +89,10 @@ public class IllRequestsAPI extends BaseApi implements IllRa {
 
   @Override
   public void postIllRaSubmissions(String lang, Submission entity, Map<String, String> okapiHeaders, Handler<AsyncResult<Response>> asyncResultHandler, Context vertxContext) {
+    // Populate the date this submission was made
+    entity.setSubmissionDate(DateTimeUtils.dtToString(ZonedDateTime.now(), ISO18626_DATE_FORMAT));
+    // TODO: This wil be whatever is set as the "initial" status
+    entity.setStatusId("49600f35-e2af-45ef-a03c-ee0de7ec3c89");
     illsubmissionService.createSubmission(entity, vertxContext, okapiHeaders)
       .thenAccept(sub -> asyncResultHandler.handle(succeededFuture(buildResponseWithLocation(okapiHeaders.get(OKAPI_URL),
         String.format(SUBMISSIONS_LOCATION_PREFIX, sub.getId()), entity))))
