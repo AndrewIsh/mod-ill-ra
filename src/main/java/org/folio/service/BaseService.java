@@ -120,7 +120,6 @@ public abstract class BaseService {
 
   public CompletableFuture<JsonObject> handleGetRequest(String endpoint, HttpClientInterface httpClient,
       Map<String, String> okapiHeaders, Logger logger) {
-
     CompletableFuture<JsonObject> future = new CompletableFuture<>();
     try {
       logger.info("Calling GET {}", endpoint);

@@ -62,6 +62,14 @@ public class IllRequestsAPI extends BaseApi implements IllRa {
   }
 
   @Override
+  public void getIllRaSearch(int offset, int limit, String query, Map<String, String> okapiHeaders, Handler<AsyncResult<Response>> asyncResultHandler, Context vertxContext) {
+    IllSupplyingAgencyService sa = new IllSupplyingAgencyService();
+    sa.sendSearch(query, okapiHeaders)
+      .thenAccept(response -> asyncResultHandler.handle(succeededFuture(buildOkResponse(response))))
+      .exceptionally(t -> handleErrorResponse(asyncResultHandler, t));
+  }
+
+  @Override
   // Some pretty gnarly chaining going on here. First we create a submission, then
   // use the created submission to create a request, then use that to make a request
   // with the supplier

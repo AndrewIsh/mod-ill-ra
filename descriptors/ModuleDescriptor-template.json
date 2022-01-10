@@ -33,6 +33,12 @@
       "handlers": [
         {
           "methods": ["GET"],
+          "pathPattern": "/ill-ra/search",
+          "permissionsRequired": ["ill-ra.search.collection.get"],
+          "modulePermissions": ["ill-connector.search.collection.get"]
+        },
+        {
+          "methods": ["GET"],
           "pathPattern": "/ill-ra/submissions",
           "permissionsRequired": ["ill-ra.submissions.collection.get"],
           "modulePermissions": ["ill-ra-storage.submissions.collection.get"]
@@ -153,6 +159,11 @@
     }
   ],
   "permissionSets": [
+    {
+      "permissionName": "ill-ra.search.collection.get",
+      "displayName": "Interlibrary loan supplying agency search - perform a search",
+      "description": "Get search collection"
+    },
     {
       "permissionName": "ill-ra.submissions.collection.get",
       "displayName": "Interlibrary loan submissions - get submission collection",

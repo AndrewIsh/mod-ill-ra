@@ -3,6 +3,7 @@ package org.folio.service.illsupplingagency;
 import io.vertx.core.Context;
 import io.vertx.core.json.JsonObject;
 import org.folio.rest.jaxrs.model.SaRequestResponse;
+import org.folio.rest.jaxrs.model.SearchResponse;
 import org.folio.rest.jaxrs.model.supplying_agency_message_storage.request.SupplyingAgencyMessageStorageRequest;
 import org.folio.rest.jaxrs.model.supplying_agency_message_storage.response.SupplyingAgencyMessageStorageResponse;
 import org.folio.rest.tools.client.interfaces.HttpClientInterface;
@@ -67,6 +68,30 @@ public class IllSupplyingAgencyService extends BaseService {
         }
         return req;
       });
+  }
+
+  public CompletableFuture<SearchResponse> sendSearch(String query, Map<String, String> headers) {
+    HttpClientInterface client = getHttpClient(headers);
+    CompletableFuture<SearchResponse> future = new CompletableFuture<>();
+    // TODO: This header needs adding but it needs to dependent on a parameter passed in the incoming API
+    // call, not hard coded
+    headers.put("x-okapi-module-id", "mod-ill-connector-bldss-1.0");
+    handleGetRequest("/ill-connector/search?query=" + query, client, headers, logger)
+      .thenApply(json -> json.mapTo(SearchResponse.class))
+      .handle((searchResponse, t) -> {
+        client.closeClient();
+        if (Objects.nonNull(t)) {
+          future.completeExceptionally(t.getCause());
+        }
+        future.complete(searchResponse);
+        return null;
+      })
+      .exceptionally(throwable -> {
+        client.closeClient();
+        future.completeExceptionally(throwable);
+        return null;
+      });
+      return future;
   }
 
 }

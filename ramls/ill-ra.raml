@@ -19,6 +19,7 @@ types:
   submissionStatuses:   !include mod-ill-ramls/schemas/submission-status/submission-statuses.json
   request:    !include mod-ill-ramls/schemas/request/request.json
   requests:   !include mod-ill-ramls/schemas/request/requests.json
+  searchResponse: !include mod-ill-ramls/schemas/search/search-response.schema
   errors:     !include raml-util/schemas/errors.schema
   parameters: !include raml-util/schemas/parameters.schema
   #UUID:
@@ -37,6 +38,22 @@ resourceTypes:
   get-only: !include raml-util/rtypes/get-only.raml
 
 /ill-ra:
+  /search:
+    get:
+      is: [
+        pageable,
+        searchable: {description: "searchable using CQL", example: "title=\"The Mandalorian\""},
+      ]
+      displayName: Perform a search on the supplying agency
+      responses:
+        200:
+          description: Returns search results
+          body:
+            application/json:
+              type: searchResponse
+              example:
+                strict: false
+                value: !include mod-ill-ramls/examples/search/search-response.json
   /sa-request:
     post:
       displayName: Make a request to a supplying agency
