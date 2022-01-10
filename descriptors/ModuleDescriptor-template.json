@@ -59,7 +59,10 @@
           "methods": ["PUT"],
           "pathPattern": "/ill-ra/submissions/{id}",
           "permissionsRequired": ["ill-ra.submissions.item.put"],
-          "modulePermissions": ["ill-ra-storage.submissions.item.put"]
+          "modulePermissions": [
+            "ill-ra-storage.submissions.item.put",
+            "ill-ra-storage.submissions.item.get"
+          ]
         },
         {
           "methods": ["DELETE"],
@@ -95,7 +98,10 @@
           "methods": ["PUT"],
           "pathPattern": "/ill-ra/requests/{id}",
           "permissionsRequired": ["ill-ra.requests.item.put"],
-          "modulePermissions": ["ill-ra-storage.requests.item.put"]
+          "modulePermissions": [
+            "ill-ra-storage.requests.item.put",
+            "ill-ra-storage.requests.item.get"
+          ]
         },
         {
           "methods": ["DELETE"],
@@ -125,7 +131,10 @@
           "methods": ["PUT"],
           "pathPattern": "/ill-ra/submission-statuses/{id}",
           "permissionsRequired": ["ill-ra.submission-statuses.item.put"],
-          "modulePermissions": ["ill-ra-storage.submission-statuses.item.put"]
+          "modulePermissions": [
+            "ill-ra-storage.submission-statuses.item.put",
+            "ill-ra-storage.submission-statuses.item.get"
+          ]
         },
         {
           "methods": ["DELETE"],
