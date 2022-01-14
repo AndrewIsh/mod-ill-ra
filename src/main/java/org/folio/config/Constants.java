@@ -1,5 +1,8 @@
 package org.folio.config;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+
 public class Constants {
 
   private Constants() {
@@ -12,4 +15,8 @@ public class Constants {
   public static final String ISO18626_DATE_FORMAT = "yyyy-MM-dd'T'HH:mm:ssZ";
 
   public static final String STORAGE_SERVICE = "/ill-ra-storage/";
+
+  public static final ArrayList<String> CONNECTOR_ABILITIES = new ArrayList<>(
+    Arrays.asList("ill-connector-search", "ill-connector-action", "ill-connector-sa-update")
+  );
 }

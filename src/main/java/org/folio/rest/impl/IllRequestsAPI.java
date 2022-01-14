@@ -1,8 +1,7 @@
 package org.folio.rest.impl;
 
 import static io.vertx.core.Future.succeededFuture;
-import static org.folio.config.Constants.ISO18626_DATE_FORMAT;
-import static org.folio.config.Constants.OKAPI_URL;
+import static org.folio.config.Constants.*;
 
 import io.vertx.core.AsyncResult;
 import io.vertx.core.Context;
@@ -16,12 +15,14 @@ import org.folio.domain.SupplyingAgency;
 import org.folio.rest.jaxrs.model.*;
 import org.folio.rest.jaxrs.model.supplying_agency_message_storage.request.SupplyingAgencyMessageStorageRequest;
 import org.folio.rest.jaxrs.resource.IllRa;
+import org.folio.service.illconnector.IllConnectorService;
 import org.folio.service.illsubmission.IllsubmissionService;
 import org.folio.service.illrequest.IllrequestService;
 import org.folio.service.illsubmissionstatus.IllsubmissionstatusService;
 import org.folio.service.illsupplingagency.IllSupplyingAgencyService;
 import org.folio.spring.SpringContextUtil;
 import org.folio.util.DateTimeUtils;
+import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import javax.ws.rs.core.Response;
@@ -59,6 +60,20 @@ public class IllRequestsAPI extends BaseApi implements IllRa {
     SupplyingAgency saUtil = new SupplyingAgency();
     JsonObject requestBody = saUtil.buildRequest(request);
     return sa.sendSupplierRequest(requestBody, vertxContext, okapiHeaders);
+  }
+
+  @Override
+  public void getIllRaConnectors(Map<String, String> okapiHeaders, Handler<AsyncResult<Response>> asyncResultHandler, Context vertxContext) {
+    IllConnectorService ics = new IllConnectorService();
+    ics.getConnectorsSupporting(okapiHeaders)
+        .thenAccept(res -> {
+          // We're using org.json JSONObject instead of Vert.x JsonObject because
+          // for reasons that I couldn't fathom, the latter was creating "map" and
+          // "empty" objects in the new JsonObject and I was not able to remove them
+          JSONObject response = new JSONObject();
+          response.put("connectors", res);
+          asyncResultHandler.handle(succeededFuture(buildOkResponse(response.toString())));
+        });
   }
 
   @Override

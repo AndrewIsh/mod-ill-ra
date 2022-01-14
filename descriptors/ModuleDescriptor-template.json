@@ -33,6 +33,11 @@
       "handlers": [
         {
           "methods": ["GET"],
+          "pathPattern": "/ill-ra/connectors",
+          "permissionsRequired": ["ill-ra.connectors.collection.get"]
+        },
+        {
+          "methods": ["GET"],
           "pathPattern": "/ill-ra/search",
           "permissionsRequired": ["ill-ra.search.collection.get"],
           "modulePermissions": ["ill-connector.search.collection.get"]
@@ -168,6 +173,11 @@
     }
   ],
   "permissionSets": [
+    {
+      "permissionName": "ill-ra.connectors.collection.get",
+      "displayName": "Interlibrary loan supplying agency - get a list of available connectors",
+      "description": "Get a list of available connectors"
+    },
     {
       "permissionName": "ill-ra.search.collection.get",
       "displayName": "Interlibrary loan supplying agency search - perform a search",

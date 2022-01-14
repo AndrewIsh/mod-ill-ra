@@ -1,0 +1,18 @@
+{
+  "$schema": "http://json-schema.org/draft-04/schema#",
+  "description": "Collection of connector module IDs",
+  "type": "object",
+  "properties": {
+    "connectors": {
+      "description": "List of module IDs of available connectors",
+      "id": "connectors",
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    }
+  },
+  "required": [
+    "connectors"
+  ]
+}

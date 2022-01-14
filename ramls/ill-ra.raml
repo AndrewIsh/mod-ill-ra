@@ -9,6 +9,7 @@ documentation:
     content: <b>API for interlibrary loan requesting agency</b>
 
 types:
+  connectors: !include schemas/connectors/connectors.json
   saRequest_Request:    !include mod-ill-ramls/schemas/sa-request/request/request.schema
   saRequest_Response:    !include mod-ill-ramls/schemas/sa-request/response/request-confirmation.schema
   saMessage_Request:    !include mod-ill-ramls/schemas/ISO18626/supplying-agency-message.schema
@@ -38,6 +39,18 @@ resourceTypes:
   get-only: !include raml-util/rtypes/get-only.raml
 
 /ill-ra:
+  /connectors:
+    get:
+      displayName: Get a list of currently available connectors
+      responses:
+        200:
+          description: Returns a list of available connectors
+          body:
+            application/json:
+              type: connectors
+              example:
+                strict: false
+                value: !include examples/connectors/connectors.json
   /search:
     get:
       is: [
