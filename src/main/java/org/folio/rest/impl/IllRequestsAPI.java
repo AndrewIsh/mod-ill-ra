@@ -63,17 +63,25 @@ public class IllRequestsAPI extends BaseApi implements IllRa {
   }
 
   @Override
-  public void getIllRaConnectors(Map<String, String> okapiHeaders, Handler<AsyncResult<Response>> asyncResultHandler, Context vertxContext) {
+  public void getIllRaConnectorsBySupporting(String supporting, Map<String, String> okapiHeaders, Handler<AsyncResult<Response>> asyncResultHandler, Context vertxContext) {
+    // Get all connectors supporting the "info" interface, i.e. all available connectors
     IllConnectorService ics = new IllConnectorService();
-    ics.getConnectorsSupporting(okapiHeaders)
-        .thenAccept(res -> {
-          // We're using org.json JSONObject instead of Vert.x JsonObject because
-          // for reasons that I couldn't fathom, the latter was creating "map" and
-          // "empty" objects in the new JsonObject and I was not able to remove them
-          JSONObject response = new JSONObject();
-          response.put("connectors", res);
-          asyncResultHandler.handle(succeededFuture(buildOkResponse(response.toString())));
-        });
+    ics.getConnectorsSupporting(supporting, okapiHeaders)
+      .thenAccept(res -> {
+        // We're using org.json JSONObject instead of Vert.x JsonObject because
+        // for reasons that I couldn't fathom, the latter was creating "map" and
+        // "empty" objects in the new JsonObject and I was not able to remove them
+        JSONObject response = new JSONObject();
+        response.put("connectors", res);
+        asyncResultHandler.handle(succeededFuture(buildOkResponse(response.toString())));
+      });
+
+  }
+
+  @Override
+  public void getIllRaConnectors(Map<String, String> okapiHeaders, Handler<AsyncResult<Response>> asyncResultHandler, Context vertxContext) {
+    // Get all connectors supporting the "info" interface, i.e. all available connectors
+    getIllRaConnectorsBySupporting("ill-connector-info", okapiHeaders, asyncResultHandler, vertxContext);
   }
 
   @Override

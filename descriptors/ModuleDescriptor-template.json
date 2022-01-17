@@ -38,6 +38,11 @@
         },
         {
           "methods": ["GET"],
+          "pathPattern": "/ill-ra/connectors/{supporting}",
+          "permissionsRequired": ["ill-ra.connectors.collection.get"]
+        },
+        {
+          "methods": ["GET"],
           "pathPattern": "/ill-ra/search",
           "permissionsRequired": ["ill-ra.search.collection.get"],
           "modulePermissions": ["ill-connector.search.collection.get"]

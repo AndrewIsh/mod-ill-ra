@@ -51,6 +51,17 @@ resourceTypes:
               example:
                 strict: false
                 value: !include examples/connectors/connectors.json
+    /{supporting}:
+      get:
+        responses:
+          200:
+            description: Returns a list of available connectors
+            body:
+              application/json:
+                type: connectors
+                example:
+                  strict: false
+                  value: !include examples/connectors/connectors.json
   /search:
     get:
       is: [
