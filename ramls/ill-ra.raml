@@ -64,6 +64,17 @@ resourceTypes:
                   value: !include examples/connectors/connectors.json
   /search:
     get:
+      queryParameters:
+        query:
+          displayName: CQL search query
+          type: string
+          description: A CQL representation of the search
+          required: true
+        connector:
+          displayName: Connector ID
+          type: string
+          description: An OKAPI module ID representing the module that will service this search
+          required: true
       is: [
         pageable,
         searchable: {description: "searchable using CQL", example: "title=\"The Mandalorian\""},

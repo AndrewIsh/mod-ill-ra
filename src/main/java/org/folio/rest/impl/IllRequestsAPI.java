@@ -85,9 +85,9 @@ public class IllRequestsAPI extends BaseApi implements IllRa {
   }
 
   @Override
-  public void getIllRaSearch(int offset, int limit, String query, Map<String, String> okapiHeaders, Handler<AsyncResult<Response>> asyncResultHandler, Context vertxContext) {
+  public void getIllRaSearch(String query, String connector, int offset, int limit, Map<String, String> okapiHeaders, Handler<AsyncResult<Response>> asyncResultHandler, Context vertxContext) {
     IllSupplyingAgencyService sa = new IllSupplyingAgencyService();
-    sa.sendSearch(query, okapiHeaders)
+    sa.sendSearch(query, connector, offset, limit, okapiHeaders)
       .thenAccept(response -> asyncResultHandler.handle(succeededFuture(buildOkResponse(response))))
       .exceptionally(t -> handleErrorResponse(asyncResultHandler, t));
   }

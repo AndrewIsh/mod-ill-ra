@@ -1,5 +1,7 @@
 package org.folio.service.illsupplingagency;
 
+import io.netty.handler.codec.http.QueryStringDecoder;
+import io.netty.handler.codec.http.QueryStringEncoder;
 import io.vertx.core.Context;
 import io.vertx.core.json.JsonObject;
 import org.folio.rest.jaxrs.model.SaRequestResponse;
@@ -11,9 +13,13 @@ import org.folio.service.BaseService;
 import static org.folio.config.Constants.CONNECTOR_CONNECT_TIMEOUT;
 import static org.folio.config.Constants.CONNECTOR_RESPONSE_TIMEOUT;
 
+import java.io.UnsupportedEncodingException;
 import java.net.URI;
+import java.net.URLEncoder;
 import java.net.http.*;
+import java.nio.charset.StandardCharsets;
 import java.time.Duration;
+import java.util.Arrays;
 import java.util.Map;
 import java.util.Objects;
 import java.util.concurrent.CompletableFuture;
@@ -70,13 +76,25 @@ public class IllSupplyingAgencyService extends BaseService {
       });
   }
 
-  public CompletableFuture<SearchResponse> sendSearch(String query, Map<String, String> headers) {
+  public CompletableFuture<SearchResponse> sendSearch(String query, String connector, int offset, int limit, Map<String, String> headers) {
     HttpClientInterface client = getHttpClient(headers);
     CompletableFuture<SearchResponse> future = new CompletableFuture<>();
-    // TODO: This header needs adding but it needs to dependent on a parameter passed in the incoming API
-    // call, not hard coded
-    headers.put("x-okapi-module-id", "mod-ill-connector-bldss-1.0");
-    handleGetRequest("/ill-connector/search?query=" + query, client, headers, logger)
+
+    //TODO: Add pagination
+
+    // Add a header specifying the connector module ID
+    // that was passed in the querystring
+    headers.put("x-okapi-module-id", connector);
+
+    // URLEncode our search terms before passing
+    String encodedQuery = "";
+    try {
+      encodedQuery = URLEncoder.encode(query, StandardCharsets.UTF_8.toString());
+    } catch(UnsupportedEncodingException e) {
+      System.out.println(e.getMessage());
+    }
+    System.out.println(encodedQuery);
+    handleGetRequest("/ill-connector/search?query=" + encodedQuery, client, headers, logger)
       .thenApply(json -> json.mapTo(SearchResponse.class))
       .handle((searchResponse, t) -> {
         client.closeClient();
