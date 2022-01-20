@@ -80,8 +80,6 @@ public class IllSupplyingAgencyService extends BaseService {
     HttpClientInterface client = getHttpClient(headers);
     CompletableFuture<SearchResponse> future = new CompletableFuture<>();
 
-    //TODO: Add pagination
-
     // Add a header specifying the connector module ID
     // that was passed in the querystring
     headers.put("x-okapi-module-id", connector);
@@ -93,8 +91,7 @@ public class IllSupplyingAgencyService extends BaseService {
     } catch(UnsupportedEncodingException e) {
       System.out.println(e.getMessage());
     }
-    System.out.println(encodedQuery);
-    handleGetRequest("/ill-connector/search?query=" + encodedQuery, client, headers, logger)
+    handleGetRequest("/ill-connector/search?query=" + encodedQuery + "&offset=" + offset + "&limit=" + limit, client, headers, logger)
       .thenApply(json -> json.mapTo(SearchResponse.class))
       .handle((searchResponse, t) -> {
         client.closeClient();
