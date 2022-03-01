@@ -154,7 +154,7 @@
         },
         {
           "methods": ["GET"],
-          "pathPattern": "/ill-ra/messages",
+          "pathPattern": "/ill-ra/requests/{id}/messages",
           "permissionsRequired": ["ill-ra.messages.collection.get"],
           "modulePermissions": ["ill-ra-storage.messages.collection.get"]
         },
@@ -165,6 +165,12 @@
           "modulePermissions": ["ill-ra-storage.messages.item.post"]
         },
         {
+          "methods": ["GET"],
+          "pathPattern": "/ill-ra/messages",
+          "permissionsRequired": ["ill-ra.messages.collection.get"],
+          "modulePermissions": ["ill-ra-storage.messages.collection.get"]
+        },
+        {
           "methods": ["POST"],
           "pathPattern": "/ill-ra/sa-request",
           "permissionsRequired": []
@@ -172,7 +178,8 @@
         {
           "methods": ["POST"],
           "pathPattern": "/ill-ra/sa-update",
-          "permissionsRequired": []
+          "permissionsRequired": [],
+          "modulePermissions": ["ill-ra-storage.messages.item.post"]
         }
       ]
     }

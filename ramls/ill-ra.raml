@@ -14,6 +14,8 @@ types:
   saRequest_Response:    !include mod-ill-ramls/schemas/sa-request/response/request-confirmation.schema
   saMessage_Request:    !include mod-ill-ramls/schemas/ISO18626/supplying-agency-message.schema
   saMessage_Response:    !include mod-ill-ramls/schemas/ISO18626/supplying-agency-message-confirmation.schema
+  sams: !include mod-ill-ramls/schemas/supplying-agency-message-storage/request/supplying-agency-message-storage-request.schema
+  samss: !include mod-ill-ramls/schemas/supplying-agency-message-storage/request/supplying-agency-message-storage-requests.schema
   submission:    !include mod-ill-ramls/schemas/submission/submission.json
   submissions:   !include mod-ill-ramls/schemas/submission/submissions.json
   submissionStatus:     !include mod-ill-ramls/schemas/submission-status/submission-status.json
@@ -212,6 +214,19 @@ resourceTypes:
         responses:
           501:
             description: "Not implemented yet"
+      /messages:
+        displayName: Supplying agency messages received for a given message
+        type:
+          collection:
+            exampleCollection: !include mod-ill-ramls/examples/message/message.json
+            exampleItem: !include mod-ill-ramls/examples/message/message.json
+            schemaCollection: samss
+            schemaItem: sams
+        get:
+          is: [pageable,
+            searchable: {description: "searchable using CQL",
+                            example: "id=\"cf23adf0-61ba-4887-bf82-956c4aae2260\""},
+            ]
   /sa-update:
     post:
       description: Receive an arbitrary request update from a supplier and update the request accordingly
@@ -224,5 +239,22 @@ resourceTypes:
           body:
             application/json:
               type: saMessage_Response
+        501:
+          description: "Not implemented yet"
+  /messages:
+    displayName: Messages
+    description: Supplying Agency Messages
+    type:
+      collection:
+        exampleCollection: !include mod-ill-ramls/examples/message/messages.json
+        exampleItem: !include mod-ill-ramls/examples/message/message.json
+        schemaCollection: samss
+        schemaItem: sams
+    get:
+      is: [pageable,
+        searchable: {description: "searchable using CQL",
+                        example: "id=\"cf23adf0-61ba-4887-bf82-956c4aae2260\""},
+        ]
+      responses:
         501:
           description: "Not implemented yet"

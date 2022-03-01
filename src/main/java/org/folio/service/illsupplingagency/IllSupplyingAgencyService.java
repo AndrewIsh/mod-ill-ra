@@ -4,14 +4,12 @@ import io.netty.handler.codec.http.QueryStringDecoder;
 import io.netty.handler.codec.http.QueryStringEncoder;
 import io.vertx.core.Context;
 import io.vertx.core.json.JsonObject;
-import org.folio.rest.jaxrs.model.SaRequestResponse;
-import org.folio.rest.jaxrs.model.SearchResponse;
+import org.folio.rest.jaxrs.model.*;
+import org.folio.rest.jaxrs.model.ISO18626.SupplyingAgencyMessage;
 import org.folio.rest.jaxrs.model.supplying_agency_message_storage.request.SupplyingAgencyMessageStorageRequest;
 import org.folio.rest.jaxrs.model.supplying_agency_message_storage.response.SupplyingAgencyMessageStorageResponse;
 import org.folio.rest.tools.client.interfaces.HttpClientInterface;
 import org.folio.service.BaseService;
-import static org.folio.config.Constants.CONNECTOR_CONNECT_TIMEOUT;
-import static org.folio.config.Constants.CONNECTOR_RESPONSE_TIMEOUT;
 
 import java.io.UnsupportedEncodingException;
 import java.net.URI;
@@ -25,16 +23,16 @@ import java.util.Objects;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.CompletionException;
 
+import static org.folio.config.Constants.*;
+
 public class IllSupplyingAgencyService extends BaseService {
 
   // TODO: Remove me, I am just hardcoding the connector port,
   // ultimately this will just be on OKAPI and we'll target by connector
   private static final String connectorApi = "http://localhost:7777/ill-connector";
+  private static final String STORAGE_SERVICE = "/ill-ra-storage/";
 
   public CompletableFuture<SaRequestResponse> sendSupplierRequest(JsonObject submission, Context context, Map<String, String> headers) {
-    // TODO: Remove me, I am just here to allow the connection to the connector
-    // to be made on the non-OKAPI port during dev
-    headers.remove("x-okapi-url");
     //CompletableFuture<SaRequestResponse> future = new CompletableFuture<>();
     HttpClient client = HttpClient.newBuilder()
       .connectTimeout(Duration.ofSeconds(CONNECTOR_CONNECT_TIMEOUT))
@@ -60,11 +58,8 @@ public class IllSupplyingAgencyService extends BaseService {
   }
 
   public CompletableFuture<SupplyingAgencyMessageStorageResponse> storeSupplierMessage(SupplyingAgencyMessageStorageRequest message, String requestId, Context context, Map<String, String> headers) {
-    // TODO: Remove me, I am just hardcoding the connector port,
-    // ultimately this will just be on OKAPI and we'll target by URL
-    String url = "http://localhost:5555/ill-ra-storage/";
     HttpClientInterface client = getHttpClient(headers);
-    return handlePostRequest(JsonObject.mapFrom(message), url + "messages", client, context, headers, logger)
+    return handlePostRequest(JsonObject.mapFrom(message), STORAGE_SERVICE + "messages", client, context, headers, logger)
       .thenApply(id -> JsonObject.mapFrom(message.withMessage(id))
           .mapTo(SupplyingAgencyMessageStorageResponse.class))
       .handle((req, t) -> {
@@ -74,6 +69,24 @@ public class IllSupplyingAgencyService extends BaseService {
         }
         return req;
       });
+  }
+
+  public CompletableFuture<Samss> getSupplierMessages(String requestId, Context context, Map<String, String> headers) {
+    CompletableFuture<Samss> future = new CompletableFuture<>();
+    HttpClientInterface client = getHttpClient(headers);
+    String endpoint = STORAGE_SERVICE + "requests/" + requestId + "/messages";
+    handleGetRequest(endpoint, client, headers, logger)
+      .thenApply(json -> json.mapTo(Samss.class))
+      .handle((messages, t) -> {
+        client.closeClient();
+        if (Objects.nonNull(t)) {
+          future.completeExceptionally(t.getCause());
+        } else {
+          future.complete(messages);
+        }
+        return null;
+      });
+    return future;
   }
 
   public CompletableFuture<SearchResponse> sendSearch(String query, String connector, int offset, int limit, Map<String, String> headers) {

@@ -42,9 +42,36 @@ public class IllRequestsAPI extends BaseApi implements IllRa {
   private IllrequestService illrequestService;
   @Autowired
   private IllsubmissionstatusService illsubmissionstatusService;
+  @Autowired
+  private IllSupplyingAgencyService illSupplyingAgencyService;
 
   public IllRequestsAPI() {
     SpringContextUtil.autowireDependencies(this, Vertx.currentContext());
+  }
+
+  @Override
+  public void getIllRaMessages(int offset, int limit, String query, String lang, Map<String, String> okapiHeaders, Handler<AsyncResult<Response>> asyncResultHandler, Context vertxContext) {
+    illSupplyingAgencyService.getSupplierMessages(query, vertxContext, okapiHeaders)
+      .thenAccept(messages ->  asyncResultHandler.handle(succeededFuture(buildOkResponse(messages))))
+      .exceptionally(t -> handleErrorResponse(asyncResultHandler, t));
+
+  }
+
+  @Override
+  public void postIllRaRequestsMessagesByRequestId(String requestId, String lang, Sams entity, Map<String, String> okapiHeaders, Handler<AsyncResult<Response>> asyncResultHandler, Context vertxContext) {
+    handleErrorResponse(asyncResultHandler, new Exception("Endpoint not implemented"));
+  }
+
+  @Override
+  public void postIllRaMessages(String lang, Sams entity, Map<String, String> okapiHeaders, Handler<AsyncResult<Response>> asyncResultHandler, Context vertxContext) {
+    handleErrorResponse(asyncResultHandler, new Exception("Endpoint not implemented"));
+  }
+
+  @Override
+  public void getIllRaRequestsMessagesByRequestId(String requestId, int offset, int limit, String query, String lang, Map<String, String> okapiHeaders, Handler<AsyncResult<Response>> asyncResultHandler, Context vertxContext) {
+    illSupplyingAgencyService.getSupplierMessages(requestId, vertxContext, okapiHeaders)
+      .thenAccept(messages ->  asyncResultHandler.handle(succeededFuture(buildOkResponse(messages))))
+      .exceptionally(t -> handleErrorResponse(asyncResultHandler, t));
   }
 
   private CompletableFuture<Submission> submitSubmission(Submission submission, Map<String, String> okapiHeaders, Handler<AsyncResult<Response>> asyncResultHandler, Context vertxContext) {
@@ -56,10 +83,9 @@ public class IllRequestsAPI extends BaseApi implements IllRa {
   }
 
   private CompletableFuture<SaRequestResponse> submitToSupplier(SaRequestRequest request, Context vertxContext, Map<String, String> okapiHeaders) {
-    IllSupplyingAgencyService sa = new IllSupplyingAgencyService();
     SupplyingAgency saUtil = new SupplyingAgency();
     JsonObject requestBody = saUtil.buildRequest(request);
-    return sa.sendSupplierRequest(requestBody, vertxContext, okapiHeaders);
+    return illSupplyingAgencyService.sendSupplierRequest(requestBody, vertxContext, okapiHeaders);
   }
 
   @Override
@@ -86,8 +112,7 @@ public class IllRequestsAPI extends BaseApi implements IllRa {
 
   @Override
   public void getIllRaSearch(String query, String connector, int offset, int limit, Map<String, String> okapiHeaders, Handler<AsyncResult<Response>> asyncResultHandler, Context vertxContext) {
-    IllSupplyingAgencyService sa = new IllSupplyingAgencyService();
-    sa.sendSearch(query, connector, offset, limit, okapiHeaders)
+    illSupplyingAgencyService.sendSearch(query, connector, offset, limit, okapiHeaders)
       .thenAccept(response -> asyncResultHandler.handle(succeededFuture(buildOkResponse(response))))
       .exceptionally(t -> handleErrorResponse(asyncResultHandler, t));
   }
@@ -161,7 +186,7 @@ public class IllRequestsAPI extends BaseApi implements IllRa {
 
   @Override
   public void postIllRaSubmissionsRequestsBySubmissionId(String submissionId, String lang, Request entity, Map<String, String> okapiHeaders, Handler<AsyncResult<Response>> asyncResultHandler, Context vertxContext) {
-
+    handleErrorResponse(asyncResultHandler, new Exception("Endpoint not implemented"));
   }
 
   @Override
@@ -247,8 +272,7 @@ public class IllRequestsAPI extends BaseApi implements IllRa {
     SupplyingAgencyMessageStorageRequest samsr = new SupplyingAgencyMessageStorageRequest()
       .withRequestId(requestId)
       .withMessage(message);
-    IllSupplyingAgencyService isas = new IllSupplyingAgencyService();
-    isas.storeSupplierMessage(samsr, requestId, vertxContext, okapiHeaders)
+    illSupplyingAgencyService.storeSupplierMessage(samsr, requestId, vertxContext, okapiHeaders)
       .thenAccept(vVoid -> {
         // If we managed to store the message, we can construct and return
         // a confirmation

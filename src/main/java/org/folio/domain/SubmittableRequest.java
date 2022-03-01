@@ -19,8 +19,6 @@ public class SubmittableRequest {
 
   public Request build() {
     return this.request
-      .withSubmissionId(this.submission.getId())
-      .withSupplierId("e78ff8e0-69e1-471e-a69f-8800bd271b76")
-      .withRequestMetadata(this.jsonRequest.toString());
+      .withSubmissionId(this.submission.getId());
   }
 }
