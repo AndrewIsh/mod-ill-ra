@@ -25,12 +25,8 @@ public class SubmittableSubmission {
     return this.submission
       .withSubmissionMetadata(this.metadata)
       .withSubmissionDate(DateTimeUtils.dtToString(ZonedDateTime.now(), ISO18626_DATE_FORMAT))
-      // TODO: This will be provided by FOLIO
-      .withSubmissionLocation("f31216de-d13a-49d3-b6bd-c6757264a22d")
       // TODO: This will be a default value
-      .withStatusId("49600f35-e2af-45ef-a03c-ee0de7ec3c89")
-      // TODO: THis will be provided by FOLIO
-      .withUserId("70993f3b-c9e8-4b16-9f5a-21102b39bdcc");
+      .withStatusId("49600f35-e2af-45ef-a03c-ee0de7ec3c89");
   }
 
 }

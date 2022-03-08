@@ -1,15 +1,13 @@
 package org.folio.service.illsupplingagency;
 
-import io.netty.handler.codec.http.QueryStringDecoder;
-import io.netty.handler.codec.http.QueryStringEncoder;
 import io.vertx.core.Context;
 import io.vertx.core.json.JsonObject;
 import org.folio.rest.jaxrs.model.*;
-import org.folio.rest.jaxrs.model.ISO18626.SupplyingAgencyMessage;
 import org.folio.rest.jaxrs.model.supplying_agency_message_storage.request.SupplyingAgencyMessageStorageRequest;
 import org.folio.rest.jaxrs.model.supplying_agency_message_storage.response.SupplyingAgencyMessageStorageResponse;
 import org.folio.rest.tools.client.interfaces.HttpClientInterface;
 import org.folio.service.BaseService;
+import org.folio.common.OkapiParams;
 
 import java.io.UnsupportedEncodingException;
 import java.net.URI;
@@ -17,7 +15,6 @@ import java.net.URLEncoder;
 import java.net.http.*;
 import java.nio.charset.StandardCharsets;
 import java.time.Duration;
-import java.util.Arrays;
 import java.util.Map;
 import java.util.Objects;
 import java.util.concurrent.CompletableFuture;
@@ -27,18 +24,15 @@ import static org.folio.config.Constants.*;
 
 public class IllSupplyingAgencyService extends BaseService {
 
-  // TODO: Remove me, I am just hardcoding the connector port,
-  // ultimately this will just be on OKAPI and we'll target by connector
-  private static final String connectorApi = "http://localhost:7777/ill-connector";
   private static final String STORAGE_SERVICE = "/ill-ra-storage/";
 
   public CompletableFuture<SaRequestResponse> sendSupplierRequest(JsonObject submission, Context context, Map<String, String> headers) {
-    //CompletableFuture<SaRequestResponse> future = new CompletableFuture<>();
+    OkapiParams okapiParams = new OkapiParams(headers);
     HttpClient client = HttpClient.newBuilder()
       .connectTimeout(Duration.ofSeconds(CONNECTOR_CONNECT_TIMEOUT))
       .build();
     HttpRequest.Builder request = HttpRequest.newBuilder()
-      .uri(URI.create(connectorApi + "/action"))
+      .uri(URI.create(okapiParams.getUrl() + "/action"))
       .timeout(Duration.ofSeconds(CONNECTOR_RESPONSE_TIMEOUT))
       .POST(HttpRequest.BodyPublishers.ofString(JsonObject.mapFrom(submission).toString()));
 
