@@ -261,6 +261,17 @@ public class IllRequestsAPI extends BaseApi implements IllRa {
       .exceptionally(t -> handleErrorResponse(asyncResultHandler, t));
   }
 
+  // Update the local request with the supplier's ID if appropriate, we don't check that this succeeds
+  // we probably should
+  public void updateLocalRequestSupplierId(String raReqId, String saReqId, Context vertxContext, Map<String, String> okapiHeaders) {
+    illrequestService.getRequestById(raReqId, vertxContext, okapiHeaders)
+      .thenApply(toUpdate -> {
+        toUpdate.setSupplierRequestId(saReqId);
+        illrequestService.updateRequestById(raReqId, toUpdate, vertxContext, okapiHeaders);
+        return null;
+      });
+  }
+
   @Override
   public void postIllRaSaUpdate(SaMessageRequest entity, Map<String, String> okapiHeaders, Handler<AsyncResult<Response>> asyncResultHandler, Context vertxContext) {
     // We've received an update from a supplier, act on it
@@ -268,10 +279,21 @@ public class IllRequestsAPI extends BaseApi implements IllRa {
     // First store the message
     String requestId = entity.getHeader().getRequestingAgencyRequestId();
     // We store the entire message
-    String message = JsonObject.mapFrom(entity).toString();
+    JsonObject message = JsonObject.mapFrom(entity);
     SupplyingAgencyMessageStorageRequest samsr = new SupplyingAgencyMessageStorageRequest()
       .withRequestId(requestId)
-      .withMessage(message);
+      .withMessage(message.toString());
+
+    // We may need to update our local request with the supplier's request ID. This is a side-effect that should not
+    // be here, we need to refactor it out into somewhere less icky. The message storage is not dependent on this happening,
+    // but what happens if this fails?
+    JsonObject jsonHeader = message.getJsonObject("Header");
+    if (jsonHeader.containsKey("RequestingAgencyRequestId") && jsonHeader.containsKey("SupplyingAgencyRequestId")) {
+      String raReqId = jsonHeader.getString("RequestingAgencyRequestId");
+      String saReqId = jsonHeader.getString("SupplyingAgencyRequestId");
+      this.updateLocalRequestSupplierId(raReqId, saReqId, vertxContext, okapiHeaders);
+    }
+
     illSupplyingAgencyService.storeSupplierMessage(samsr, requestId, vertxContext, okapiHeaders)
       .thenAccept(vVoid -> {
         // If we managed to store the message, we can construct and return

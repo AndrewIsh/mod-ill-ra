@@ -179,7 +179,11 @@
           "methods": ["POST"],
           "pathPattern": "/ill-ra/sa-update",
           "permissionsRequired": [],
-          "modulePermissions": ["ill-ra-storage.messages.item.post"]
+          "modulePermissions": [
+            "ill-ra-storage.requests.item.get",
+            "ill-ra-storage.requests.item.put",
+            "ill-ra-storage.messages.item.post"
+          ]
         }
       ]
     }
